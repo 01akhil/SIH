@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mentor Signup</title>
+    <style>
+        body {
+            font-family: 'Segoe UI';
+            background-color: #000; /* Black background */
+            color: #fff; /* White text color */
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: #000; /* Black background for the container */
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+            color: #fff; /* White color for heading */
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        label {
+            font-weight: 500;
+            margin-right: 10px; /* Space between label and input */
+            color: #fff; /* White color for labels */
+            transition: color 0.3s;
+            width: 150px; /* Fixed width for labels */
+            text-align: left; /* Align text to the right */
+        }
+        select, input[type="text"], input[type="number"], textarea {
+            flex: 1; /* Allow fields to take remaining space */
+            padding: 10px;
+            border: none;
+            border-bottom: 2px solid #fff; /* White border */
+            border-radius: 0;
+            outline: none;
+            font-family: 'Roboto', sans-serif;
+            background: black; /* Dark background for inputs and textareas */
+            color: #fff; /* White text color */
+            transition: border-bottom-color 0.3s;
+        }
+        textarea {
+            resize: vertical;
+        }
+        button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 5vh;
+            display: block;
+            width: 100%;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .hidden {
+            display: none;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #333; /* Darker background for scrollbar track */
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #555; /* Dark gray for scrollbar thumb */
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #777; /* Lighter gray for scrollbar thumb on hover */
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Mentor Signup</h2>
+        <form action="/mentor/profile" method="POST">
+            <div class="form-group">
+                <label for="name">Full Name:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="currentJob">Current Job Title:</label>
+                <input type="text" id="currentJob" name="currentJob" required>
+            </div>
+
+            <div class="form-group">
+                <label for="company">Current Company:</label>
+                <input type="text" id="company" name="company" required>
+            </div>
+
+            <div class="form-group">
+                <label for="yearsOfExperience">Years of Experience:</label>
+                <input type="number" id="yearsOfExperience" name="yearsOfExperience" min="0" required>
+            </div>
+
+            <div class="form-group">
+                <label for="industry">Industry:</label>
+                <select id="industry" name="industry" required>
+                    <option value="Technology">Technology</option>
+                    <option value="Finance">Finance</option>
+                    <option value="Healthcare">Healthcare</option>
+                    <option value="Education">Education</option>
+                    <option value="Government">Government</option>
+                    <option value="Non-Profit">Non-Profit</option>
+                    <option value="Retail">Retail</option>
+                    <option value="Manufacturing">Manufacturing</option>
+                    <option value="Entertainment">Entertainment</option>
+                    <option value="Real Estate">Real Estate</option>
+                    <option value="Legal">Legal</option>
+                    <option value="Transportation">Transportation</option>
+                    <option value="Construction">Construction</option>
+                    <option value="Telecommunications">Telecommunications</option>
+                    <option value="Energy">Energy</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="expertise">Expertise:</label>
+                <textarea id="expertise" name="expertise" rows="4" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="previousExperience">Previous Experience:</label>
+                <textarea id="previousExperience" name="previousExperience" rows="4" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="certifications">Certifications (if any):</label>
+                <input type="text" id="certifications" name="certifications">
+            </div>
+
+            <div class="form-group">
+                <label for="skills">Skills:</label>
+                <select id="skills" name="skills[]" multiple required>
+                    <option value="Programming">Programming</option>
+                    <option value="Project Management">Project Management</option>
+                    <option value="Communication">Communication</option>
+                    <option value="Data Analysis">Data Analysis</option>
+                    <option value="Design">Design</option>
+                    <option value="Writing">Writing</option>
+                    <option value="Marketing">Marketing</option>
+                    <option value="Sales">Sales</option>
+                    <option value="Research">Research</option>
+                    <option value="Negotiation">Negotiation</option>
+                    <option value="Customer Service">Customer Service</option>
+                    <option value="Leadership">Leadership</option>
+                    <option value="Teaching">Teaching</option>
+                    <option value="Event Planning">Event Planning</option>
+                    <option value="Finance Management">Finance Management</option>
+                </select>
+            </div>
+
+            <div class="form-group hidden" id="skill-details">
+                <label for="skill-details-select">Specific Details:</label>
+                <select id="skill-details-select" name="skillDetails">
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="otherDetails">Other Details:</label>
+                <textarea id="otherDetails" name="otherDetails" rows="4"></textarea>
+            </div>
+
+            <button type="submit">Save Profile</button>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const skillsSelect = document.getElementById('skills');
+            const skillDetailsDiv = document.getElementById('skill-details');
+            const skillDetailsSelect = document.getElementById('skill-details-select');
+
+            const skillOptions = {
+                'Programming': ['Frontend Development', 'Backend Development', 'Full Stack Development', 'Mobile App Development'],
+                'Project Management': ['Agile', 'Scrum', 'Waterfall', 'Kanban'],
+                'Communication': ['Public Speaking', 'Negotiation', 'Conflict Resolution', 'Persuasion'],
+                'Data Analysis': ['Statistical Analysis', 'Data Visualization', 'Machine Learning', 'Big Data'],
+                'Design': ['Graphic Design', 'UI/UX Design', 'Web Design', 'Product Design'],
+                'Marketing': ['Digital Marketing', 'Content Marketing', 'SEO', 'Social Media Marketing'],
+                'Sales': ['B2B Sales', 'B2C Sales', 'Lead Generation', 'Account Management']
+            };
+
+            skillsSelect.addEventListener('change', (event) => {
+                const selectedSkill = event.target.value;
+                if (skillOptions[selectedSkill]) {
+                    skillDetailsDiv.classList.remove('hidden');
+                    skillDetailsSelect.innerHTML = skillOptions[selectedSkill].map(option => `<option value="${option}">${option}</option>`).join('');
+                } else {
+                    skillDetailsDiv.classList.add('hidden');
+                }
+            });
+
+            document.querySelectorAll('input[type="text"], input[type="number"], textarea').forEach(element => {
+                element.addEventListener('input', (e) => {
+                    const maxLength = e.target.getAttribute('maxlength') || 100; // Default max length
+                    const valueLength = e.target.value.length;
+                    const percentageFilled = Math.min(100, (valueLength / maxLength) * 100);
+                    const borderColor = `linear-gradient(to right, orange ${percentageFilled}%, black ${percentageFilled}%)`;
+
+                    e.target.style.borderBottomColor = borderColor;
+                });
+
+                element.addEventListener('focus', (e) => {
+                    e.target.previousElementSibling.style.color = 'orange';
+                    e.target.style.borderBottomColor = 'orange';
+                });
+
+                element.addEventListener('blur', (e) => {
+                    e.target.previousElementSibling.style.color = '#fff';
+                    e.target.style.borderBottomColor = '#fff'; 
+                });
+            });
+        });
+    </script>
+</body>
+</html>

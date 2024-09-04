@@ -1,0 +1,31 @@
+{
+  "name": "vid-conferencing-final",
+  "version": "1.0.0",
+  "main": "src/server/server.js",
+  "scripts": {
+    "start": "node src/server/server.js",
+    "watch": "watchify src/front-end/client-side-script/client.js -o src/front-end/client-side-script/bundle.js -v"
+  },
+  "author": "akhilesh-bhadula",
+  "license": "ISC",
+  "type": "module",
+  "description": "",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "downloadjs": "^1.4.7",
+    "express": "^4.19.2",
+    "express-validator": "^7.2.0",
+    "httpolyglot": "^0.1.2",
+    "jsonwebtoken": "^9.0.2",
+    "mediasoup": "^3.14.11",
+    "mediasoup-client": "^3.7.16",
+    "mongoose": "^8.5.4",
+    "paypal-rest-sdk": "^1.8.1",
+    "socket.io": "^4.7.5",
+    "socket.io-client": "^4.7.5",
+    "ws": "^8.18.0"
+  }
+}

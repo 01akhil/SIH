@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mentor Card</title>
+    <style>
+        body {
+            background-color: #f6f9fb;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            
+
+        }
+        .card {
+            width: 20vw;
+            max-height: 54vh; /* Prevent exceeding the height of the viewport */
+            background-color: #ffffff;
+            border: 2px solid black;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin: 2vw auto;
+            padding: 1.5vw;
+            box-sizing: border-box;
+            text-align: center;
+            overflow: hidden; /* Prevent overflow */
+        }
+        .card img {
+            width: 95%;
+            height: auto; /* Keep aspect ratio */
+            max-height: 40%; /* Ensure image does not exceed the card's height */
+            object-fit: cover; /* Maintain the aspect ratio of the image */
+            margin-bottom: 1.5vw;
+            border-radius: 5px;
+        }
+        .card h5 {
+            margin: 0;
+            font-size: 1.1em; /* Adjust font size */
+            color: #333;
+            margin-bottom: 0.5vw; /* Adjust margin */
+            line-height: 0.8; /* Adjust line height for better readability */
+            white-space: nowrap; /* Prevent text wrapping */
+            overflow: hidden; /* Hide overflow text */
+            text-overflow: ellipsis; /* Add ellipsis */
+        }
+        .card p {
+            margin: 0.5vw 0; /* Adjust margin for spacing */
+            font-size: 1em;
+            color: #555;
+            line-height: 0.8; /* Improve readability */
+        }
+        .card .rating {
+            font-weight: bold;
+            margin-bottom: 1vw;
+        }
+        .card .price {
+            font-size: 1.2em;
+            color: #000;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+   <div>
+    <div class="card">
+        <img src="DALL·E 2024-09-01 20.38.27 - A realistic image of a cow standing in a grassy field. The cow is a healthy, well-fed Holstein breed with distinct black and whi.webp" alt="Mentor Image">
+        <h5>Mr. Mentor</h5>
+        <p>Dr. Cow</p>
+        <p class="rating">Rating: 4.5/5</p>
+        <p class="price">Rs 200</p>
+    </div>
+
+    <div class="card">
+        <img src="DALL·E 2024-09-01 20.38.27 - A realistic image of a cow standing in a grassy field. The cow is a healthy, well-fed Holstein breed with distinct black and whi.webp" alt="Mentor Image">
+        <h5>Mr. Mentor</h5>
+        <p>Dr. Cow</p>
+        <p class="rating">Rating: 4.5/5</p>
+        <p class="price">Rs 200</p>
+    </div>
+   </div>
+
+</body>
+</html>

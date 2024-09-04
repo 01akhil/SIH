@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mentor Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 0;
+        }
+
+        header nav {
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .mentor-details {
+            margin: 20px 0;
+        }
+
+        .mentor-details p {
+            margin: 5px 0;
+        }
+
+        .availability {
+            margin-top: 20px;
+        }
+
+        .availability h3 {
+            margin-bottom: 10px;
+        }
+
+        .slots-container {
+            display: none;
+            margin-top: 10px;
+        }
+
+        .slot {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 5px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .slot:hover {
+            background-color: #f0f0f0;
+        }
+
+        .slot.selected {
+            background-color: #cce5ff;
+        }
+
+        .toggle-button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .toggle-button:hover {
+            background-color: #0056b3;
+        }
+
+        .paid-mentorship-links {
+            margin-top: 20px;
+        }
+
+        .paid-mentorship-links h2 {
+            margin-bottom: 10px;
+        }
+
+        .paid-mentorship-links a {
+            display: block;
+            margin-bottom: 5px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            text-decoration: none;
+            color: #007bff;
+        }
+
+        .paid-mentorship-links a:hover {
+            background-color: #e2e6ea;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <nav>
+            <h1>Mentor Details</h1>
+        </nav>
+    </header>
+    <main>
+        <div class="container">
+            <div class="blog">
+                <div id="mentorIdContainer"></div>
+                <div id="mentorDetails" class="mentor-details"></div>
+                <div id="mentorAvailability" class="availability"></div>
+                <button id="makeMentorButton" class="toggle-button">Make Mentor</button>
+                <div id="paidMentorshipLinks" class="paid-mentorship-links">
+                    <h2>Paid Mentorship Links</h2>
+                    <div id="linksContainer"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+        function getPathParam(paramIndex) {
+            const pathParts = window.location.pathname.split('/');
+            return pathParts[paramIndex] || null;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+    const mentorId = getPathParam(3);
+    const menteeId = getQueryParam('menteeId');
+
+    if (mentorId && menteeId) {
+        document.getElementById('mentorIdContainer').textContent = `Mentor ID: ${mentorId}`;
+
+        fetch(`/mentor/detail/${mentorId}`)
+            .then(response => response.json())
+            .then(data => {
+                const mentorDetailsContainer = document.getElementById('mentorDetails');
+                const mentorAvailabilityContainer = document.getElementById('mentorAvailability');
+
+                if (mentorDetailsContainer) {
+                    mentorDetailsContainer.innerHTML = `
+                        <h2>Mentor Details</h2>
+                        <p><strong>Name:</strong> ${data.name || 'N/A'}</p>
+                        <p><strong>Current Job:</strong> ${data.currentJob || 'N/A'}</p>
+                        <p><strong>Company:</strong> ${data.company || 'N/A'}</p>
+                        <p><strong>Years of Experience:</strong> ${data.yearsOfExperience || 'N/A'}</p>
+                        <p><strong>Industry:</strong> ${data.industry || 'N/A'}</p>
+                        <p><strong>Expertise:</strong> ${data.expertise || 'N/A'}</p>
+                        <p><strong>Previous Experience:</strong> ${data.previousExperience || 'N/A'}</p>
+                        <p><strong>Certifications:</strong> ${data.certifications || 'N/A'}</p>
+                        <p><strong>Skills:</strong> ${data.skills ? data.skills.join(', ') : 'N/A'}</p>
+                        <p><strong>Skill Details:</strong> ${data.skillDetails || 'N/A'}</p>
+                        <p><strong>Other Details:</strong> ${data.otherDetails || 'N/A'}</p>
+                    `;
+
+                    if (data.availability && data.availability.length > 0) {
+                        let availabilityHTML = `
+                            <button class="toggle-button" id="toggleAvailabilityButton">Show Availability</button>
+                            <div id="slotsContainer" class="slots-container">
+                        `;
+
+                        data.availability.forEach(entry => {
+                            const formattedDate = new Date(entry.date).toLocaleDateString(undefined, {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric'
+                            });
+
+                            const availableSlots = entry.slots.filter(slot => !slot.booked);
+
+                            availabilityHTML += `
+                                <p><strong>Date:</strong> ${formattedDate}</p>
+                                ${availableSlots.length > 0 ? availableSlots.map(slot => `
+                                    <div class="slot" data-start="${slot.startTime}" data-end="${slot.endTime}">
+                                        <p><strong>Start Time:</strong> ${slot.startTime || 'N/A'}</p>
+                                        <p><strong>End Time:</strong> ${slot.endTime || 'N/A'}</p>
+                                        <button class="payment-button" data-start="${slot.startTime}" data-end="${slot.endTime}" onclick="handleSubmit(event)">Book & Pay</button>
+                                    </div>
+                                `).join('') : '<p>No available slots.</p>'}
+                                <hr>
+                            `;
+                        });
+
+                        availabilityHTML += '</div>';
+                        mentorAvailabilityContainer.innerHTML = availabilityHTML;
+
+                        document.getElementById('toggleAvailabilityButton').addEventListener('click', () => {
+                            const slotsContainer = document.getElementById('slotsContainer');
+                            if (slotsContainer.style.display === 'none' || slotsContainer.style.display === '') {
+                                slotsContainer.style.display = 'block';
+                                document.getElementById('toggleAvailabilityButton').textContent = 'Hide Availability';
+                            } else {
+                                slotsContainer.style.display = 'none';
+                                document.getElementById('toggleAvailabilityButton').textContent = 'Show Availability';
+                            }
+                        });
+
+                        document.querySelectorAll('.slot').forEach(slotElement => {
+                            slotElement.addEventListener('click', () => {
+                                document.querySelectorAll('.slot').forEach(el => el.classList.remove('selected'));
+                                slotElement.classList.add('selected');
+                            });
+                        });
+                    } else {
+                        mentorAvailabilityContainer.innerHTML = '<p>No availability information found.</p>';
+                    }
+                } else {
+                    console.error('Element with ID "mentorDetails" not found.');
+                }
+            })
+            .catch(error => console.error('Error fetching mentor details:', error));
+
+        fetch(`/mentor/paidMentorships/${mentorId}/${menteeId}`)
+            .then(response => response.json())
+            .then(data => {
+                const linksContainer = document.getElementById('linksContainer');
+                if (data.paidMentorships && data.paidMentorships.length > 0) {
+                    linksContainer.innerHTML = data.paidMentorships.map(pm => `
+                        <a href="${pm.link}" target="_blank">${pm.link}</a>
+                    `).join('');
+                } else {
+                    linksContainer.innerHTML = '<p>No paid mentorship links found.</p>';
+                }
+            })
+            .catch(error => console.error('Error fetching paid mentorship links:', error));
+
+        document.getElementById('makeMentorButton').addEventListener('click', () => {
+            if (mentorId && menteeId) {
+                fetch('/mentor/make-mentor', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ mentorId, menteeId })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('Mentor status updated successfully!');
+                        } else {
+                            alert('Error updating mentor status.');
+                        }
+                    })
+                    .catch(error => console.error('Error updating mentor status:', error));
+            } else {
+                console.error('Mentor ID or Mentee ID is missing.');
+            }
+        });
+    } else {
+        console.error('Mentor ID or Mentee ID is missing.');
+    }
+});
+
+async function handleSubmit(event) {
+    event.preventDefault();
+
+    const slotElement = event.target.closest('.slot');
+    const startTime = slotElement.getAttribute('data-start');
+    const endTime = slotElement.getAttribute('data-end');
+    const mentorId = getPathParam(3);
+    const menteeId = getQueryParam('menteeId');
+    const returnUrl = window.location.href;  // Captures the current page URL
+
+    try {
+        const response = await fetch('/payment', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ mentorId, menteeId, startTime, endTime, returnUrl })
+        });
+
+        const data = await response.json();
+
+        if (data && data.links && data.links.length > 0) {
+            const approvalUrl = data.links[0].href;
+            window.location.href = approvalUrl;
+        } else {
+            console.error('Invalid response structure:', data);
+        }
+    } catch (error) {
+        console.error('Error initiating payment:', error);
+    }
+}
+
+
+    </script>
+</body>
+
+</html>

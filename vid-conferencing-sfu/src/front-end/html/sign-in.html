@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In & Sign Up Form</title>
+    <link rel="stylesheet" href="sign-in_style.css">
+    <style>
+        body {
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            background-color: #DCCCE4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            width: 100%;
+            max-width: 400px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+        .form-container {
+            width: 100%;
+            position: relative;
+        }
+        .form-toggle {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .toggle-btn {
+            background-color: #fff;
+            border: none;
+            outline: none;
+            padding: 10px 20px;
+            margin: 0 5px;
+            cursor: pointer;
+            font-size: 20px;
+            transition: background-color 0.3s ease;
+        }
+        .toggle-btn.active {
+            background-color: #8348A7;
+            color: white;
+            border-radius: 5px;
+        }
+        .form {
+            display: flex;
+            flex-direction: column;
+        }
+        .form h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .form input {
+            margin-bottom: 15px;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .form button {
+            padding: 10px;
+            font-size: 16px;
+            background-color: #8348A7;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .form button:hover {
+            background-color: #B193C4;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="form-container">
+            <div class="form-toggle">
+                <button id="signInBtn" class="toggle-btn">Sign In</button>
+                <button id="signUpBtn" class="toggle-btn">Sign Up</button>
+            </div>
+
+            <form id="signInForm" class="form">
+                <h2>Sign In</h2>
+                <input type="text" placeholder="Username" required>
+                <input type="password" placeholder="Password" required>
+                <button type="submit">Sign In</button>
+            </form>
+
+            <form id="signUpForm" class="form" style="display: none;">
+                <h2>Sign Up</h2>
+                <input type="text" placeholder="Username" required>
+                <input type="email" placeholder="Email" required>
+                <input type="password" placeholder="Password" required>
+                <button type="submit">Sign Up</button>
+            </form>
+        </div>
+
+        <a id="bypassLink" href="#">Bypass for prototype</a>
+    </div>
+    <script src="sign-in.js"></script>
+    <script>
+        function getMentorMentee() {
+            const path = window.location.pathname;
+            const parts = path.split('/');
+            return parts[parts.length - 2] || 'Unknown';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const mentorMentee = getMentorMentee();
+            const bypassLink = document.getElementById('bypassLink');
+            if (mentorMentee !== 'Unknown') {
+                bypassLink.href = `/${mentorMentee}/home`;
+                bypassLink.textContent = `Bypass to ${mentorMentee} home`;
+            }
+        });
+
+        document.getElementById('signInBtn').addEventListener('click', function() {
+            document.getElementById('signInForm').style.display = 'block';
+            document.getElementById('signUpForm').style.display = 'none';
+            this.classList.add('active');
+            document.getElementById('signUpBtn').classList.remove('active');
+        });
+
+        document.getElementById('signUpBtn').addEventListener('click', function() {
+            document.getElementById('signUpForm').style.display = 'block';
+            document.getElementById('signInForm').style.display = 'none';
+            this.classList.add('active');
+            document.getElementById('signInBtn').classList.remove('active');
+        });
+    </script>
+</body>
+</html>

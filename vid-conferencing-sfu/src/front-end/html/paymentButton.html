@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Page</title>
+    <script>
+        async function handleSubmit(event) {
+            event.preventDefault();
+
+            try {
+                const response = await fetch('http://localhost:3000/payment', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                console.log('Response:', data); // Log response to verify structure
+                
+                if (data && data.links && data.links.length > 0) {
+                    const approvalUrl = data.links.find(link => link.rel === 'approval_url');
+                    if (approvalUrl && approvalUrl.href) {
+                        window.location.href = approvalUrl.href;
+                    } else {
+                        console.error('Approval URL not found in response:', data);
+                    }
+                } else {
+                    console.error('Invalid response structure:', data);
+                }
+            } catch (error) {
+                console.error('Error during payment:', error);
+            }
+        }
+
+        
+    </script>
+</head>
+<body>
+    <button onclick="handleSubmit(event)">Buy now</button>
+</body>
+</html>

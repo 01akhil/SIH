@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mentee Profile</title>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
+
+
+    <style>
+        body {
+            font-family: 'Segoe UI';
+            background-color: #000; /* Black background */
+            color: #fff; /* White text color */
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: #000; /* Black background for the container */
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+            color: #fff; /* White color for heading */
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        label {
+            font-weight: 500;
+            margin-right: 10px; /* Space between label and input */
+            color: #fff; /* White color for labels */
+            transition: color 0.3s;
+            width: 150px; /* Fixed width for labels */
+            text-align: left; /* Align text to the right */
+        }
+        select, input[type="text"], textarea {
+            flex: 1; /* Allow fields to take remaining space */
+            padding: 10px;
+            border: none;
+            border-bottom: 2px solid #fff; /* White border */
+            border-radius: 0;
+            outline: none;
+            font-family: 'Roboto', sans-serif;
+            background: black; /* Dark background for inputs and textareas */
+            color: #fff; /* White text color */
+            transition: border-bottom-color 0.3s;
+        }
+        select:focus, input[type="text"]:focus, textarea:focus {
+            border-bottom-color: orange;
+             /* Orange border when focused */
+        }
+        select:focus + label, input[type="text"]:focus + label, textarea:focus + label {
+            color: orange; /* Orange color for label when focused */
+        }
+        textarea {
+            resize: vertical;
+        }
+        button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 5vh;
+            display: block;
+            width: 100%;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .hidden {
+            display: none;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #333; /* Darker background for scrollbar track */
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #555; /* Dark gray for scrollbar thumb */
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #777; /* Lighter gray for scrollbar thumb on hover */
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Mentee Profile</h2>
+        <form action="/mentee/profile" method="POST">
+            <div class="form-group">
+                <label for="education">Education:</label>
+                <select id="education" name="education">
+                    <option value="">Select</option>
+                    <option value="High School Diploma">High School Diploma</option>
+                    <option value="Associate's Degree">Associate's Degree</option>
+                    <option value="Bachelor's Degree">Bachelor's Degree</option>
+                    <option value="Master's Degree">Master's Degree</option>
+                    <option value="Doctorate">Doctorate</option>
+                    <option value="Postdoctoral">Postdoctoral</option>
+                    <option value="Certificate">Certificate</option>
+                    <option value="Diploma">Diploma</option>
+                    <option value="Professional Training">Professional Training</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="goals">Goals:</label>
+                <select id="goals" name="goals">
+                    <option value="">Select</option>
+                    <option value="Career Advancement">Career Advancement</option>
+                    <option value="Skill Development">Skill Development</option>
+                    <option value="Higher Education">Higher Education</option>
+                    <option value="Entrepreneurship">Entrepreneurship</option>
+                    <option value="Networking">Networking</option>
+                    <option value="Personal Growth">Personal Growth</option>
+                    <option value="Job Transition">Job Transition</option>
+                    <option value="Certifications">Certifications</option>
+                    <option value="Leadership Development">Leadership Development</option>
+                    <option value="Industry Knowledge">Industry Knowledge</option>
+                    <option value="Work-Life Balance">Work-Life Balance</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="interests">Interests:</label>
+                <select id="interests" name="interests">
+                    <option value="">Select</option>
+                    <option value="Technology">Technology</option>
+                    <option value="Science">Science</option>
+                    <option value="Arts">Arts</option>
+                    <option value="Business">Business</option>
+                    <option value="Education">Education</option>
+                    <option value="Health">Health</option>
+                    <option value="Finance">Finance</option>
+                    <option value="Travel">Travel</option>
+                    <option value="Sports">Sports</option>
+                    <option value="Music">Music</option>
+                    <option value="Cooking">Cooking</option>
+                    <option value="Writing">Writing</option>
+                    <option value="Environment">Environment</option>
+                    <option value="Design">Design</option>
+                    <option value="Social Causes">Social Causes</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="expertise-status">Current Status of Expertise:</label>
+                <select id="expertise-status" name="expertiseStatus">
+                    <option value="">Select</option>
+                    <option value="Beginner">Beginner</option>
+                    <option value="Intermediate">Intermediate</option>
+                    <option value="Advanced">Advanced</option>
+                    <option value="Expert">Expert</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="experience-level">Experience Level:</label>
+                <select id="experience-level" name="experienceLevel">
+                    <option value="">Select</option>
+                    <option value="Less than 1 year">Less than 1 year</option>
+                    <option value="1-3 years">1-3 years</option>
+                    <option value="3-5 years">3-5 years</option>
+                    <option value="More than 5 years">More than 5 years</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="skills">Skills:</label>
+                <select id="skills" name="skills">
+                    <option value="">Select</option>
+                    <option value="Programming">Programming</option>
+                    <option value="Project Management">Project Management</option>
+                    <option value="Communication">Communication</option>
+                    <option value="Data Analysis">Data Analysis</option>
+                    <option value="Design">Design</option>
+                    <option value="Writing">Writing</option>
+                    <option value="Marketing">Marketing</option>
+                    <option value="Sales">Sales</option>
+                    <option value="Research">Research</option>
+                    <option value="Negotiation">Negotiation</option>
+                    <option value="Customer Service">Customer Service</option>
+                    <option value="Leadership">Leadership</option>
+                    <option value="Teaching">Teaching</option>
+                    <option value="Event Planning">Event Planning</option>
+                    <option value="Finance Management">Finance Management</option>
+                </select>
+            </div>
+
+            <div class="form-group hidden" id="skill-details">
+                <label for="skill-details-select">Specific Details:</label>
+                <select id="skill-details-select" name="skillDetails">
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="current-job">Current Job Title:</label>
+                <input type="text" id="current-job" name="currentJob">
+            </div>
+
+            <div class="form-group">
+                <label for="industry">Industry:</label>
+                <select id="industry" name="industry">
+                    <option value="">Select</option>
+                    <option value="Technology">Technology</option>
+                    <option value="Finance">Finance</option>
+                    <option value="Healthcare">Healthcare</option>
+                    <option value="Education">Education</option>
+                    <option value="Manufacturing">Manufacturing</option>
+                    <option value="Retail">Retail</option>
+                    <option value="Real Estate">Real Estate</option>
+                    <option value="Government">Government</option>
+                    <option value="Non-Profit">Non-Profit</option>
+                    <option value="Hospitality">Hospitality</option>
+                    <option value="Transportation">Transportation</option>
+                    <option value="Telecommunications">Telecommunications</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="contact-method">Preferred Contact Method:</label>
+                <select id="contact-method" name="contactMethod">
+                    <option value="">Select</option>
+                    <option value="Email">Email</option>
+                    <option value="Phone">Phone</option>
+                    <option value="Text">Text</option>
+                    <option value="Video Call">Video Call</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="additional-info">Additional Information:</label>
+                <textarea id="additional-info" name="additionalInfo" rows="4"></textarea>
+            </div>
+
+            <button type="submit">Save Profile</button>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const skills = {
+                "Programming": ["JavaScript", "Python", "Java", "C++", "C#", "Ruby"],
+                "Project Management": ["Agile", "Scrum", "Waterfall", "Lean"],
+                "Communication": ["Public Speaking", "Technical Writing", "Negotiation"],
+                "Data Analysis": ["Excel", "SQL", "R", "Tableau"],
+                "Design": ["Graphic Design", "UX/UI Design", "Web Design"],
+                "Writing": ["Creative Writing", "Technical Writing", "Copywriting"],
+                "Marketing": ["SEO", "Content Marketing", "Social Media Marketing"],
+                "Sales": ["B2B Sales", "B2C Sales", "Account Management"],
+                "Research": ["Market Research", "Academic Research", "Competitive Analysis"],
+                "Negotiation": ["Contract Negotiation", "Salary Negotiation", "Deal Negotiation"],
+                "Customer Service": ["Customer Support", "Client Relations", "Complaint Resolution"],
+                "Leadership": ["Team Leadership", "Strategic Planning", "Change Management"],
+                "Teaching": ["Classroom Teaching", "Online Tutoring", "Curriculum Development"],
+                "Event Planning": ["Corporate Events", "Social Events", "Conference Planning"],
+                "Finance Management": ["Budgeting", "Financial Analysis", "Accounting"]
+            };
+
+            const skillsSelect = document.getElementById('skills');
+            const skillDetailsDiv = document.getElementById('skill-details');
+            const skillDetailsSelect = document.getElementById('skill-details-select');
+
+            skillsSelect.addEventListener('change', function() {
+                const selectedSkill = this.value;
+                if (skills[selectedSkill]) {
+                    skillDetailsDiv.classList.remove('hidden');
+                    skillDetailsSelect.innerHTML = '<option value="">Select</option>';
+                    skills[selectedSkill].forEach(skill => {
+                        const option = document.createElement('option');
+                        option.value = skill;
+                        option.textContent = skill;
+                        skillDetailsSelect.appendChild(option);
+                    });
+                } else {
+                    skillDetailsDiv.classList.add('hidden');
+                    skillDetailsSelect.innerHTML = '';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
