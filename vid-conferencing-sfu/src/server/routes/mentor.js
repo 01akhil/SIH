@@ -3,6 +3,7 @@ import express from 'express';
 import Mentor from '../models/Mentor.js';  
 import Mentee from '../models/Mentee.js';  
 import Blog from '../models/Blog.js';
+import Course from "../models/Course.js";
 
 import path from 'path';
 import authenticateToken from '../middleware/authMiddleware.js';  
@@ -331,6 +332,36 @@ router.get('/paid-mentorship-sessions/:mentorId', async (req, res) => {
         res.status(500).json({ message: 'Error fetching paid mentorship sessions' });
     }
 });
+
+
+router.post('/submit-course-form/:mentorId', authenticateToken, async (req, res) => {
+    const { title, amount } = req.body;
+    const { mentorId } = req.params;
+    
+    try {
+        const mentor = await Mentor.findById(mentorId);
+        if (!mentor) {
+            return res.status(404).json({ message: 'Mentor not found' });
+        }
+        
+        const course = new Course({ // Ensure correct model name
+            title,
+            amount,
+            mentorId
+        });
+        
+        await course.save();
+        
+        mentor.courses.push(course._id); 
+        await mentor.save();
+        
+        res.status(200).json({ message: 'Course submitted successfully' }); // Updated message
+    } catch (error) {
+        console.error('Error submitting course:', error); // Updated error log
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
 
 export default router;
 

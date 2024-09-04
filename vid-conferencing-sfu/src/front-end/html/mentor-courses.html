@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Course</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #007bff;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Create a Course</h1>
+    <div class="container">
+        <form id="courseForm">
+            <input type="hidden" id="mentorId" name="mentorId">
+          
+
+            <label for="courseTitle">Course Title:</label>
+            <input type="text" id="courseTitle" name="title" required>
+
+            <label for="courseDescription">Course Description:</label>
+            <textarea id="courseDescription" name="description" rows="4" required></textarea>
+
+            <label for="amount">Amount:</label>
+            <input type="number" id="amount" name="amount" step="0.01" required>
+
+            <button type="submit">Next</button>
+        </form>
+    </div>
+
+    <script>
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+        function getPathParam(paramIndex) {
+            const pathParts = window.location.pathname.split('/');
+            return pathParts[paramIndex] || null;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const mentorId = getPathParam(3);
+
+            if (mentorId ) {
+                document.getElementById('mentorId').value = mentorId;
+            }
+
+            document.getElementById('courseForm').addEventListener('submit', function (event) {
+                event.preventDefault();
+                
+                // Get form data
+                const formData = new FormData(this);
+                
+                // Convert formData to a plain object
+                const data = Object.fromEntries(formData.entries());
+
+                // Send data to the server
+                fetch(`/mentor/submit-course-form/${data.mentorId}`, { // Corrected URL to match server route
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Success:', data);
+                    
+                    // Redirect to another page
+                    window.location.href =`/mentor/create-course/${mentorId}`;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    // Optionally show an error message
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

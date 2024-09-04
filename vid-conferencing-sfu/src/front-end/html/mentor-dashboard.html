@@ -86,6 +86,13 @@
 
     </style>
 </head>
+<nav>
+
+    <a href="#" id="createCourseLink">
+        <button>Create Course</button>
+    </a>
+
+</nav>
 <body style="font-family: Arial, sans-serif; background-color: #f4f4f4; color: #333; overflow-x: hidden;">
     <nav>
         <p id="mentor-id"></p>
@@ -196,20 +203,21 @@
                 try {
                     const objectIdMatch = paramValue.match(/ObjectId\(['"]([a-fA-F0-9]{24})['"]\)/);
                     if (objectIdMatch && objectIdMatch[1]) {
-                        return objectIdMatch[1]; // Return only the extracted ObjectId
+                        return objectIdMatch[1]; 
                     }
                 } catch (error) {
                     console.error('Error parsing ObjectId:', error);
                 }
             }
 
-            return paramValue; // Return the plain mentorId if it's not an object
+            return paramValue; 
         }
 
         const mentorId = getQueryParam('mentorId');
         document.getElementById('mentor-id').textContent = `Mentor ID: ${mentorId}`;
 
-        
+        document.getElementById('createCourseLink').href = `/mentor/courses/${mentorId}`;
+
         document.getElementById('new-post-form').addEventListener('submit', async (e) => {
     e.preventDefault();
 

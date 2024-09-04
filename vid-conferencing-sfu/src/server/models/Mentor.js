@@ -54,7 +54,9 @@ const mentorSchema = new mongoose.Schema({
         }
     ],
 
-    blogs: [{ type: Schema.Types.ObjectId, ref: 'Blog' }]
+    blogs: [{ type: Schema.Types.ObjectId, ref: 'Blog' }],
+
+    courses:[{type:Schema.Types.ObjectId, ref: 'Course'}]
 
 });
 

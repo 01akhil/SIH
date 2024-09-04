@@ -53,7 +53,13 @@ app.get('/mentor/details/:id',authenticateToken, (req, res) => {
     res.sendFile(path.join(__dirname,  'mentor-details.html'));
 });
 
+app.get('/mentor/courses/:id', authenticateToken,(req,res)=>{
+  res.sendFile(path.join(__dirname,  'mentor-courses.html'));
+})
 
+app.get('/mentor/create-course/:id', authenticateToken,(req,res)=>{
+  res.sendFile(path.join(__dirname,  'create-course.html'));
+})
 
 app.use('/auth', authRoutes);
 app.use('/mentor', mentorRoutes);

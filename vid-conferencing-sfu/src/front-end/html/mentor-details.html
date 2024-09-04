@@ -118,6 +118,8 @@
     <header>
         <nav>
             <h1>Mentor Details</h1>
+
+
         </nav>
     </header>
     <main>
@@ -152,6 +154,8 @@
 
     if (mentorId && menteeId) {
         document.getElementById('mentorIdContainer').textContent = `Mentor ID: ${mentorId}`;
+
+        
 
         fetch(`/mentor/detail/${mentorId}`)
             .then(response => response.json())

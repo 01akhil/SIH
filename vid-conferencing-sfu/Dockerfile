@@ -67,6 +67,8 @@ COPY src/front-end/html/paymentButton.html /app
 COPY src/front-end/html/paymentFailed.html /app
 COPY src/front-end/html/paymentSuccess.html /app
 
+COPY src/front-end/html/mentor-courses.html /app
+COPY src/front-end/html/create-course.html /app
 
 COPY src/front-end/assets/bg.avif /app
 COPY src/front-end/assets/mentor.png /app
