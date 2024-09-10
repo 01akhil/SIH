@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/blog.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <title>Blog</title>
+</head>
+<body>
+<header>
+    <div class="nav container">
+        <a href="#" class="logo">he<span>llo</span></a>
+        <a href="#" class="login">Login</a>  
+    </div>
+</header>
+
+<section class="home" id="home">
+    <div class="home-text container">
+        <h2 class="home-title">The Blog</h2>
+        <span class="home-subtitle">Your Source of Great Content!</span>
+    </div>
+</section>
+
+<div class="post-filter container">
+    <span class="filter-item active-filter" data-filter='all'>All</span>
+    <span class="filter-item" data-filter='tech'>Tech</span>
+    <span class="filter-item" data-filter='marketing'>Marketing</span>
+    <span class="filter-item" data-filter='design'>Design</span>
+</div>
+
+<section class="post container">
+</section>
+
+<section class="new-post container">
+    <h2>Add a New Post</h2>
+    <form id="new-post-form">
+        <label for="post-title">Title:</label>
+        <input type="text" id="post-title" name="title" required>
+
+        <label for="post-content">Content:</label>
+        <textarea id="post-content" name="content" required></textarea>
+
+        <label for="post-author">Author:</label>
+        <input type="text" id="post-author" name="author" required>
+
+        <label for="post-category">Category:</label>
+        <select id="post-category" name="category" required>
+            <option value="tech">Tech</option>
+            <option value="marketing">Marketing</option>
+            <option value="design">Design</option>
+        </select>
+
+        <button type="submit">Submit</button>
+    </form>
+</section>
+
+<div class="footer container">
+    <p>&#169; AD All Rights Reserved</p>
+    <div class="social">
+        <a href="#"><i class='bx bxl-facebook'></i></a>
+        <a href="#"><i class='bx bxl-twitter'></i></a>
+        <a href="#"><i class='bx bxl-instagram'></i></a>
+        <a href="#"><i class='bx bxl-linkedin'></i></a>
+    </div>
+</div>
+
+<script 
+src="https://code.jquery.com/jquery-3.7.1.js" 
+integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" 
+crossorigin="anonymous"></script>
+
+<script src="../client-side-script/blog.js"></script>    
+</body>
+</html>
