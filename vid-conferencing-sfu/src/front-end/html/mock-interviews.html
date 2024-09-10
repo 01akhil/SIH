@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mock Interviews</title>
+    <style>
+        .mentorship-card {
+            border: 1px solid #ddd;
+            border-radius: 4px; /* Reduced border radius */
+            padding: 12px; /* Reduced padding */
+            margin: 16px;
+            width: calc(25% - 32px); /* Reduced width */
+            box-sizing: border-box;
+            display: inline-block;
+            vertical-align: top;
+            text-align: center;
+            background-color: #fff;
+        }
+
+        .mentorship-card img {
+            width: 80px; /* Fixed width */
+            height: 80px; /* Fixed height */
+            border-radius: 50%;
+            object-fit: cover; /* Ensures image fits within the given dimensions */
+            margin-bottom: 8px; /* Added margin for spacing */
+        }
+
+        .mentorship-card h2 {
+            font-size: 1.25em; /* Reduced font size */
+            margin: 12px 0; /* Reduced margin */
+        }
+
+        .mentorship-card p {
+            font-size: 0.875em; /* Reduced font size */
+            color: #666;
+            margin: 4px 0; /* Reduced margin */
+        }
+
+        .mentorship-card .mentor-name {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .mentorship-card .mentorship-link {
+            color: #1a73e8;
+            text-decoration: none;
+        }
+
+        .mentorship-card .mentorship-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>Mock interviews</h1>
+
+    <div id="mentorships-container"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const menteeId = getMenteeIdFromUrl();
+
+            if (menteeId) {
+                fetchMentorships(menteeId);
+            } else {
+                console.error('Mentee ID not found in URL');
+                alert('Mentee ID not found in URL');
+            }
+        });
+
+        function getMenteeIdFromUrl() {
+            const pathParts = window.location.pathname.split('/');
+            // Assuming the menteeId is the second part of the path
+            return pathParts[2] || null;
+        }
+
+        async function fetchMentorships(menteeId) {
+            try {
+                const response = await fetch(`/paid-mentorship/${menteeId}`);
+                const mentorships = await response.json();
+
+                if (Array.isArray(mentorships)) {
+                    const container = document.getElementById('mentorships-container');
+                    container.innerHTML = '';
+
+                    mentorships.forEach(mentorship => {
+                        const card = document.createElement('div');
+                        card.className = 'mentorship-card';
+                        
+                        card.innerHTML = `
+                            <img src="${mentorship.mentorId.profileImage || 'placeholder.jpg'}" alt="${mentorship.mentorId.name}">
+                            <h2>${mentorship.mentorId.name}</h2>
+                            <p>Date: ${new Date(mentorship.date).toLocaleDateString()}</p>
+                            <p>Time: ${mentorship.time}</p>
+                            <a href="${mentorship.link}" class="mentorship-link" target="_blank">Join Mentorship</a>
+                        `;
+                        
+                        container.appendChild(card);
+                    });
+                } else {
+                    console.error('No paid mentorships found for this Mentee ID');
+                    alert('No paid mentorships found for this Mentee ID');
+                }
+            } catch (error) {
+                console.error('Error fetching mentorships:', error);
+                alert('Error fetching mentorships');
+            }
+        }
+    </script>
+</body>
+</html>

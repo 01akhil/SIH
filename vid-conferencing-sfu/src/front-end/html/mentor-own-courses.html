@@ -1,0 +1,67 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mentor Courses</title>
+    <style>
+        .course-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px;
+            display: inline-block;
+            width: 300px;
+        }
+        .course-card img {
+            max-width: 100%;
+            border-radius: 8px;
+        }
+        .course-card h2 {
+            font-size: 1.5em;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="courses-container"></div>
+
+    <script>
+
+function getMentorIdFromUrl() {
+        const pathParts = window.location.pathname.split('/');
+        return pathParts[1] || null;
+    } 
+
+     
+
+        async function fetchCourses() {
+            const mentorId=getMentorIdFromUrl();// Replace with actual mentor ID
+            try {
+                const response = await fetch(`/mentor/${mentorId}/courses`);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const courses = await response.json();
+                const container = document.getElementById('courses-container');
+                container.innerHTML = courses.map(course => `
+                    <div class="course-card">
+                        <img src="${course.avatar.url || 'default-avatar.png'}" alt="${course.title}">
+                        <h2>${course.title}</h2>
+                        <p>${course.description}</p>
+                        <p>Price: $${course.amount || 'Free'}</p>
+                         <a href="/mentor/${mentorId}/course/${course._id}">View Course</a>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error fetching courses:', error);
+            }
+        }
+
+        // Fetch courses on page load
+        fetchCourses();
+    </script>
+</body>
+</html>

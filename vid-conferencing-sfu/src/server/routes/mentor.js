@@ -4,27 +4,16 @@ import Mentor from '../models/Mentor.js';
 import Mentee from '../models/Mentee.js';  
 import Blog from '../models/Blog.js';
 import Course from "../models/Course.js";
-
 import path from 'path';
 import authenticateToken from '../middleware/authMiddleware.js';  
 import { body, validationResult } from 'express-validator';
 
+import { uploadPhoto } from '../controllers/uploadController.js';
+import { upload } from '../middleware/uploadMiddleware.js';
+
 const router = express.Router();
 
-//<--------------------------------------------post request for profile--------------------------------------------->
-router.post('/profile', authenticateToken, [
-    body('name').notEmpty().withMessage('Name is required'),
-    body('currentJob').notEmpty().withMessage('Current job title is required'),
-    body('company').notEmpty().withMessage('Company is required'),
-    body('yearsOfExperience').isNumeric().withMessage('Years of experience must be a number'),
-    body('industry').notEmpty().withMessage('Industry is required'),
-    body('expertise').notEmpty().withMessage('Expertise is required'),
-    body('previousExperience').notEmpty().withMessage('Previous experience is required'),
-    body('skills').isArray({ min: 1 }).withMessage('At least one skill is required'),
-    body('certifications').optional(),
-    body('skillDetails').optional(),
-    body('otherDetails').optional()
-], async (req, res) => {
+router.post('/profile', authenticateToken, upload.single('profileImage'), uploadPhoto, async (req, res) => {
     const {
         name,
         currentJob,
@@ -39,21 +28,13 @@ router.post('/profile', authenticateToken, [
         otherDetails
     } = req.body;
 
-    
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-    }
-
     try {
-        
         const mentor = await Mentor.findById(req.user.mentor);
         const mentorId = req.query.mentorId || req.user.mentor;
 
         if (!mentor) {
             return res.status(404).json({ message: 'Mentor not found' });
         }
-
 
         mentor.name = name || mentor.name;
         mentor.currentJob = currentJob || mentor.currentJob;
@@ -67,16 +48,92 @@ router.post('/profile', authenticateToken, [
         mentor.skillDetails = skillDetails || mentor.skillDetails;
         mentor.otherDetails = otherDetails || mentor.otherDetails;
 
+        console.log('File URL:', req.fileUrl);
+
+        if (req.fileUrl) {
+            mentor.profileImage = req.fileUrl; 
+        }
+
+
         await mentor.save();
         console.log("Mentor profile updated");
 
-      
         res.redirect(`/mentor/dashboard?mentorId=${mentorId}`);
     } catch (error) {
         console.error('Error in /mentor/profile:', error);
         res.status(500).json({ message: 'Server error', error });
     }
 });
+
+
+//<--------------------------------------------post request for profile--------------------------------------------->
+// router.post('/profile', authenticateToken,uploadPhoto, [
+//     body('name').notEmpty().withMessage('Name is required'),
+//     body('currentJob').notEmpty().withMessage('Current job title is required'),
+//     body('company').notEmpty().withMessage('Company is required'),
+//     body('yearsOfExperience').isNumeric().withMessage('Years of experience must be a number'),
+//     body('industry').notEmpty().withMessage('Industry is required'),
+//     body('expertise').notEmpty().withMessage('Expertise is required'),
+//     body('previousExperience').notEmpty().withMessage('Previous experience is required'),
+//     body('skills').isArray({ min: 1 }).withMessage('At least one skill is required'),
+//     body('certifications').optional(),
+//     body('skillDetails').optional(),
+//     body('otherDetails').optional()
+// ], async (req, res) => {
+//     const {
+//         name,
+//         currentJob,
+//         company,
+//         yearsOfExperience,
+//         industry,
+//         expertise,
+//         previousExperience,
+//         certifications,
+//         skills,
+//         skillDetails,
+//         otherDetails
+//     } = req.body;
+
+    
+//     const errors = validationResult(req);
+//     if (!errors.isEmpty()) {
+//         return res.status(400).json({ errors: errors.array() });
+//     }
+
+//     try {
+        
+//         const mentor = await Mentor.findById(req.user.mentor);
+//         const mentorId = req.query.mentorId || req.user.mentor;
+
+//         if (!mentor) {
+//             return res.status(404).json({ message: 'Mentor not found' });
+//         }
+
+
+//         mentor.name = name || mentor.name;
+//         mentor.currentJob = currentJob || mentor.currentJob;
+//         mentor.company = company || mentor.company;
+//         mentor.yearsOfExperience = yearsOfExperience || mentor.yearsOfExperience;
+//         mentor.industry = industry || mentor.industry;
+//         mentor.expertise = expertise || mentor.expertise;
+//         mentor.previousExperience = previousExperience || mentor.previousExperience;
+//         mentor.certifications = certifications || mentor.certifications;
+//         mentor.skills = skills || mentor.skills;
+//         mentor.skillDetails = skillDetails || mentor.skillDetails;
+//         mentor.otherDetails = otherDetails || mentor.otherDetails;
+
+//         await mentor.save();
+//         console.log("Mentor profile updated");
+
+      
+//         res.redirect(`/mentor/dashboard?mentorId=${mentorId}`);
+//     } catch (error) {
+//         console.error('Error in /mentor/profile:', error);
+//         res.status(500).json({ message: 'Server error', error });
+//     }
+// });
+
+
 
 //<--------------------------------------------get request for search--------------------------------------------->
 router.get('/search', async (req, res) => {
@@ -334,33 +391,44 @@ router.get('/paid-mentorship-sessions/:mentorId', async (req, res) => {
 });
 
 
-router.post('/submit-course-form/:mentorId', authenticateToken, async (req, res) => {
-    const { title, amount } = req.body;
+router.post('/submit-course-form/:mentorId', authenticateToken, upload.single('avatar'),uploadPhoto ,async (req, res) => {
+    const { title, amount, description ,category} = req.body; // Make sure to include all necessary fields
     const { mentorId } = req.params;
     
     try {
-        const mentor = await Mentor.findById(mentorId);
-        if (!mentor) {
-            return res.status(404).json({ message: 'Mentor not found' });
+      const mentor = await Mentor.findById(mentorId);
+      if (!mentor) {
+        return res.status(404).json({ message: 'Mentor not found' });
+      }
+      
+      const course = new Course({
+        title,
+        description, // Include description
+        amount,
+        mentorId,
+        category,
+
+        avatar: {
+            url: req.fileUrl, // Use the file URL attached by uploadPhoto middleware
+            public_id: req.file ? req.file.filename : null, // Assuming filename as public_id
         }
-        
-        const course = new Course({ // Ensure correct model name
-            title,
-            amount,
-            mentorId
-        });
-        
-        await course.save();
-        
-        mentor.courses.push(course._id); 
-        await mentor.save();
-        
-        res.status(200).json({ message: 'Course submitted successfully' }); // Updated message
+      });
+      
+      await course.save();
+      
+      mentor.courses.push(course._id);
+      await mentor.save();
+      
+      res.status(200).json({ 
+        message: 'Course submitted successfully',
+        courseId: course._id 
+      });
     } catch (error) {
-        console.error('Error submitting course:', error); // Updated error log
-        res.status(500).json({ message: 'Internal server error' });
+      console.error('Error submitting course:', error);
+      res.status(500).json({ message: 'Internal server error' });
     }
-});
+  });
+  
 
 
 export default router;

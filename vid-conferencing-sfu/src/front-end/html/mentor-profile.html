@@ -94,7 +94,13 @@
 <body>
     <div class="container">
         <h2>Mentor Signup</h2>
-        <form action="/mentor/profile" method="POST">
+        <form action="/mentor/profile" method="POST" enctype="multipart/form-data">
+
+            <div class="form-group"></div>
+                <label for="profileImage">Upload Profile Image:</label>
+                <input type="file" id="profileImage" name="profileImage" accept="image/*">
+            </div>
+
             <div class="form-group">
                 <label for="name">Full Name:</label>
                 <input type="text" id="name" name="name" required>

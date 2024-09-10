@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -6,17 +8,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mentor Details</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
+          body {
+            font-family: 'Roboto', sans-serif;
             line-height: 1.6;
             color: #333;
-            background-color: #f4f4f4;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
         }
 
         header {
-            background-color: #007bff;
+            background: linear-gradient(135deg, #007bff, #00aaff);
             color: white;
-            padding: 10px 0;
+            padding: 20px 0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         header nav {
@@ -25,23 +30,50 @@
 
         header h1 {
             margin: 0;
+            font-size: 2.5em;
+            font-weight: 700;
         }
 
         .container {
-            max-width: 800px;
-            margin: auto;
-            padding: 20px;
-            background: #fff;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 30px;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .blog {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
         }
 
         .mentor-details {
-            margin: 20px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .mentor-details img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #007bff;
+            margin-bottom: 20px;
+        }
+
+        .mentor-details h2 {
+            margin-top: 0;
+            font-size: 1.8em;
+            color: #007bff;
         }
 
         .mentor-details p {
-            margin: 5px 0;
+            margin: 10px 0;
+            font-size: 1.1em;
         }
 
         .availability {
@@ -50,6 +82,8 @@
 
         .availability h3 {
             margin-bottom: 10px;
+            font-size: 1.5em;
+            color: #007bff;
         }
 
         .slots-container {
@@ -59,34 +93,39 @@
 
         .slot {
             border: 1px solid #ddd;
-            padding: 10px;
-            margin-bottom: 5px;
+            padding: 15px;
+            margin-bottom: 10px;
             cursor: pointer;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
+            border-radius: 8px;
+            background: #f8f9fa;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
         }
 
         .slot:hover {
-            background-color: #f0f0f0;
+            background-color: #e2e6ea;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         .slot.selected {
-            background-color: #cce5ff;
+            background-color: #d1ecf1;
+            border-color: #bee5eb;
         }
 
         .toggle-button {
-            background-color: #007bff;
+            background: #007bff;
             color: white;
             border: none;
-            padding: 10px 15px;
+            padding: 12px 20px;
             cursor: pointer;
-            border-radius: 5px;
+            border-radius: 8px;
             font-size: 16px;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
         }
 
         .toggle-button:hover {
             background-color: #0056b3;
+            transform: scale(1.02);
         }
 
         .paid-mentorship-links {
@@ -94,22 +133,43 @@
         }
 
         .paid-mentorship-links h2 {
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+            color: #007bff;
         }
 
         .paid-mentorship-links a {
             display: block;
-            margin-bottom: 5px;
-            padding: 10px;
-            background-color: #f8f9fa;
+            margin-bottom: 10px;
+            padding: 15px;
+            background-color: #ffffff;
             border: 1px solid #ddd;
-            border-radius: 5px;
+            border-radius: 8px;
             text-decoration: none;
             color: #007bff;
+            font-size: 1.1em;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
         }
 
         .paid-mentorship-links a:hover {
             background-color: #e2e6ea;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .payment-button {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .payment-button:hover {
+            background-color: #218838;
+            transform: scale(1.02);
         }
     </style>
 </head>
@@ -118,8 +178,6 @@
     <header>
         <nav>
             <h1>Mentor Details</h1>
-
-
         </nav>
     </header>
     <main>
@@ -149,167 +207,164 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-    const mentorId = getPathParam(3);
-    const menteeId = getQueryParam('menteeId');
+            const mentorId = getPathParam(3);
+            const menteeId = getQueryParam('menteeId');
 
-    if (mentorId && menteeId) {
-        document.getElementById('mentorIdContainer').textContent = `Mentor ID: ${mentorId}`;
-
-        
-
-        fetch(`/mentor/detail/${mentorId}`)
-            .then(response => response.json())
-            .then(data => {
-                const mentorDetailsContainer = document.getElementById('mentorDetails');
-                const mentorAvailabilityContainer = document.getElementById('mentorAvailability');
-
-                if (mentorDetailsContainer) {
-                    mentorDetailsContainer.innerHTML = `
-                        <h2>Mentor Details</h2>
-                        <p><strong>Name:</strong> ${data.name || 'N/A'}</p>
-                        <p><strong>Current Job:</strong> ${data.currentJob || 'N/A'}</p>
-                        <p><strong>Company:</strong> ${data.company || 'N/A'}</p>
-                        <p><strong>Years of Experience:</strong> ${data.yearsOfExperience || 'N/A'}</p>
-                        <p><strong>Industry:</strong> ${data.industry || 'N/A'}</p>
-                        <p><strong>Expertise:</strong> ${data.expertise || 'N/A'}</p>
-                        <p><strong>Previous Experience:</strong> ${data.previousExperience || 'N/A'}</p>
-                        <p><strong>Certifications:</strong> ${data.certifications || 'N/A'}</p>
-                        <p><strong>Skills:</strong> ${data.skills ? data.skills.join(', ') : 'N/A'}</p>
-                        <p><strong>Skill Details:</strong> ${data.skillDetails || 'N/A'}</p>
-                        <p><strong>Other Details:</strong> ${data.otherDetails || 'N/A'}</p>
-                    `;
-
-                    if (data.availability && data.availability.length > 0) {
-                        let availabilityHTML = `
-                            <button class="toggle-button" id="toggleAvailabilityButton">Show Availability</button>
-                            <div id="slotsContainer" class="slots-container">
-                        `;
-
-                        data.availability.forEach(entry => {
-                            const formattedDate = new Date(entry.date).toLocaleDateString(undefined, {
-                                year: 'numeric',
-                                month: 'long',
-                                day: 'numeric'
-                            });
-
-                            const availableSlots = entry.slots.filter(slot => !slot.booked);
-
-                            availabilityHTML += `
-                                <p><strong>Date:</strong> ${formattedDate}</p>
-                                ${availableSlots.length > 0 ? availableSlots.map(slot => `
-                                    <div class="slot" data-start="${slot.startTime}" data-end="${slot.endTime}">
-                                        <p><strong>Start Time:</strong> ${slot.startTime || 'N/A'}</p>
-                                        <p><strong>End Time:</strong> ${slot.endTime || 'N/A'}</p>
-                                        <button class="payment-button" data-start="${slot.startTime}" data-end="${slot.endTime}" onclick="handleSubmit(event)">Book & Pay</button>
-                                    </div>
-                                `).join('') : '<p>No available slots.</p>'}
-                                <hr>
-                            `;
-                        });
-
-                        availabilityHTML += '</div>';
-                        mentorAvailabilityContainer.innerHTML = availabilityHTML;
-
-                        document.getElementById('toggleAvailabilityButton').addEventListener('click', () => {
-                            const slotsContainer = document.getElementById('slotsContainer');
-                            if (slotsContainer.style.display === 'none' || slotsContainer.style.display === '') {
-                                slotsContainer.style.display = 'block';
-                                document.getElementById('toggleAvailabilityButton').textContent = 'Hide Availability';
-                            } else {
-                                slotsContainer.style.display = 'none';
-                                document.getElementById('toggleAvailabilityButton').textContent = 'Show Availability';
-                            }
-                        });
-
-                        document.querySelectorAll('.slot').forEach(slotElement => {
-                            slotElement.addEventListener('click', () => {
-                                document.querySelectorAll('.slot').forEach(el => el.classList.remove('selected'));
-                                slotElement.classList.add('selected');
-                            });
-                        });
-                    } else {
-                        mentorAvailabilityContainer.innerHTML = '<p>No availability information found.</p>';
-                    }
-                } else {
-                    console.error('Element with ID "mentorDetails" not found.');
-                }
-            })
-            .catch(error => console.error('Error fetching mentor details:', error));
-
-        fetch(`/mentor/paidMentorships/${mentorId}/${menteeId}`)
-            .then(response => response.json())
-            .then(data => {
-                const linksContainer = document.getElementById('linksContainer');
-                if (data.paidMentorships && data.paidMentorships.length > 0) {
-                    linksContainer.innerHTML = data.paidMentorships.map(pm => `
-                        <a href="${pm.link}" target="_blank">${pm.link}</a>
-                    `).join('');
-                } else {
-                    linksContainer.innerHTML = '<p>No paid mentorship links found.</p>';
-                }
-            })
-            .catch(error => console.error('Error fetching paid mentorship links:', error));
-
-        document.getElementById('makeMentorButton').addEventListener('click', () => {
             if (mentorId && menteeId) {
-                fetch('/mentor/make-mentor', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ mentorId, menteeId })
-                })
+                document.getElementById('mentorIdContainer').textContent = `Mentor ID: ${mentorId}`;
+
+                fetch(`/mentor/detail/${mentorId}`)
                     .then(response => response.json())
                     .then(data => {
-                        if (data.success) {
-                            alert('Mentor status updated successfully!');
+                        const mentorDetailsContainer = document.getElementById('mentorDetails');
+                        const mentorAvailabilityContainer = document.getElementById('mentorAvailability');
+
+                        if (mentorDetailsContainer) {
+                            mentorDetailsContainer.innerHTML = `
+                                <h2>Mentor Details</h2>
+                                <img src="${data.profileImage || 'default-image-url.jpg'}" alt="Profile Image" style="width: 150px; height: 150px; border-radius: 50%; margin-bottom: 10px;">
+                                <p><strong>Name:</strong> ${data.name || 'N/A'}</p>
+                                <p><strong>Current Job:</strong> ${data.currentJob || 'N/A'}</p>
+                                <p><strong>Company:</strong> ${data.company || 'N/A'}</p>
+                                <p><strong>Years of Experience:</strong> ${data.yearsOfExperience || 'N/A'}</p>
+                                <p><strong>Industry:</strong> ${data.industry || 'N/A'}</p>
+                                <p><strong>Expertise:</strong> ${data.expertise || 'N/A'}</p>
+                                <p><strong>Previous Experience:</strong> ${data.previousExperience || 'N/A'}</p>
+                                <p><strong>Certifications:</strong> ${data.certifications || 'N/A'}</p>
+                                <p><strong>Skills:</strong> ${data.skills ? data.skills.join(', ') : 'N/A'}</p>
+                                <p><strong>Skill Details:</strong> ${data.skillDetails || 'N/A'}</p>
+                                <p><strong>Other Details:</strong> ${data.otherDetails || 'N/A'}</p>
+                            `;
+
+                            if (data.availability && data.availability.length > 0) {
+                                let availabilityHTML = `
+                                    <button class="toggle-button" id="toggleAvailabilityButton">Show Availability</button>
+                                    <div id="slotsContainer" class="slots-container">
+                                `;
+
+                                data.availability.forEach(entry => {
+                                    const formattedDate = new Date(entry.date).toLocaleDateString(undefined, {
+                                        year: 'numeric',
+                                        month: 'long',
+                                        day: 'numeric'
+                                    });
+
+                                    const availableSlots = entry.slots.filter(slot => !slot.booked);
+
+                                    availabilityHTML += `
+                                        <p><strong>Date:</strong> ${formattedDate}</p>
+                                        ${availableSlots.length > 0 ? availableSlots.map(slot => `
+                                            <div class="slot" data-start="${slot.startTime}" data-end="${slot.endTime}">
+                                                <p><strong>Start Time:</strong> ${slot.startTime || 'N/A'}</p>
+                                                <p><strong>End Time:</strong> ${slot.endTime || 'N/A'}</p>
+                                                <button class="payment-button" data-start="${slot.startTime}" data-end="${slot.endTime}" onclick="handleSubmit(event)">Book & Pay</button>
+                                            </div>
+                                        `).join('') : '<p>No available slots.</p>'}
+                                        <hr>
+                                    `;
+                                });
+
+                                availabilityHTML += '</div>';
+                                mentorAvailabilityContainer.innerHTML = availabilityHTML;
+
+                                document.getElementById('toggleAvailabilityButton').addEventListener('click', () => {
+                                    const slotsContainer = document.getElementById('slotsContainer');
+                                    if (slotsContainer.style.display === 'none' || slotsContainer.style.display === '') {
+                                        slotsContainer.style.display = 'block';
+                                        document.getElementById('toggleAvailabilityButton').textContent = 'Hide Availability';
+                                    } else {
+                                        slotsContainer.style.display = 'none';
+                                        document.getElementById('toggleAvailabilityButton').textContent = 'Show Availability';
+                                    }
+                                });
+
+                                document.querySelectorAll('.slot').forEach(slotElement => {
+                                    slotElement.addEventListener('click', () => {
+                                        document.querySelectorAll('.slot').forEach(el => el.classList.remove('selected'));
+                                        slotElement.classList.add('selected');
+                                    });
+                                });
+                            } else {
+                                mentorAvailabilityContainer.innerHTML = '<p>No availability information found.</p>';
+                            }
                         } else {
-                            alert('Error updating mentor status.');
+                            console.error('Element with ID "mentorDetails" not found.');
                         }
                     })
-                    .catch(error => console.error('Error updating mentor status:', error));
+                    .catch(error => console.error('Error fetching mentor details:', error));
+
+                fetch(`/mentor/paidMentorships/${mentorId}/${menteeId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const linksContainer = document.getElementById('linksContainer');
+                        if (data.paidMentorships && data.paidMentorships.length > 0) {
+                            linksContainer.innerHTML = data.paidMentorships.map(pm => `
+                                <a href="${pm.link}" target="_blank">${pm.link}</a>
+                            `).join('');
+                        } else {
+                            linksContainer.innerHTML = '<p>No paid mentorship links found.</p>';
+                        }
+                    })
+                    .catch(error => console.error('Error fetching paid mentorship links:', error));
+
+                document.getElementById('makeMentorButton').addEventListener('click', () => {
+                    if (mentorId && menteeId) {
+                        fetch('/mentor/make-mentor', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ mentorId, menteeId })
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    alert('Mentor status updated successfully!');
+                                } else {
+                                    alert('Error updating mentor status.');
+                                }
+                            })
+                            .catch(error => console.error('Error updating mentor status:', error));
+                    } else {
+                        console.error('Mentor ID or Mentee ID is missing.');
+                    }
+                });
             } else {
                 console.error('Mentor ID or Mentee ID is missing.');
             }
         });
-    } else {
-        console.error('Mentor ID or Mentee ID is missing.');
-    }
-});
 
-async function handleSubmit(event) {
-    event.preventDefault();
+        async function handleSubmit(event) {
+            event.preventDefault();
 
-    const slotElement = event.target.closest('.slot');
-    const startTime = slotElement.getAttribute('data-start');
-    const endTime = slotElement.getAttribute('data-end');
-    const mentorId = getPathParam(3);
-    const menteeId = getQueryParam('menteeId');
-    const returnUrl = window.location.href;  // Captures the current page URL
+            const slotElement = event.target.closest('.slot');
+            const startTime = slotElement.getAttribute('data-start');
+            const endTime = slotElement.getAttribute('data-end');
+            const mentorId = getPathParam(3);
+            const menteeId = getQueryParam('menteeId');
+            const returnUrl = window.location.href;  // Captures the current page URL
 
-    try {
-        const response = await fetch('/payment', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ mentorId, menteeId, startTime, endTime, returnUrl })
-        });
+            try {
+                const response = await fetch('/payment', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ mentorId, menteeId, startTime, endTime, returnUrl, type: 'mock interview' })
+                });
 
-        const data = await response.json();
+                const data = await response.json();
 
-        if (data && data.links && data.links.length > 0) {
-            const approvalUrl = data.links[0].href;
-            window.location.href = approvalUrl;
-        } else {
-            console.error('Invalid response structure:', data);
+                if (data && data.links && data.links.length > 0) {
+                    const approvalUrl = data.links[0].href;
+                    window.location.href = approvalUrl;
+                } else {
+                    console.error('Invalid response structure:', data);
+                }
+            } catch (error) {
+                console.error('Error initiating payment:', error);
+            }
         }
-    } catch (error) {
-        console.error('Error initiating payment:', error);
-    }
-}
-
-
     </script>
 </body>
 

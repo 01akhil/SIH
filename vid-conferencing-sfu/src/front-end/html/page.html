@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Light background for the track */
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #c1c1c1; /* Light grey color for the thumb */
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8; /* Darker grey color on hover */
+}
+
+
+        body{
+            margin: 0px;
+            padding: 0px;
+            font-family: 'Segoe UI';
+        }
+
+        nav{
+            background-color: #FFFFFF;
+            width: 16vw;
+        }
+
+         .nav-item:hover svg {
+            fill: rgb(68, 0, 255);
+            stroke: blue;
+            cursor: pointer;
+        }
+
+        .nav-item:hover{
+            cursor: pointer;
+        }
+
+        .search-container {
+            width: 100%;
+            height: 10vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 1rem;
+            box-sizing: border-box;
+            
+        }
+
+        .search-container input {
+            width: 100%;
+            height: 50%;
+            padding: 0.5rem;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            
+            outline: none;
+            border-radius: 20px;
+        }
+
+        .search-container input::placeholder {
+            color: #aaa;
+        }
+
+
+        #results {
+    margin-top: 10px;
+    padding: 0;
+    list-style-type: none;
+    position: absolute;
+    top: 50px;
+    width: 25%;
+    margin-left: 68.7vw;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+#results li {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#results li:hover {
+    background-color: #f1f1f1;
+}
+
+#results button {
+    padding: 5px 10px;
+    border: none;
+    background-color: #007BFF;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.3s;
+}
+
+#results button:hover {
+    background-color: #0056b3;
+}
+
+.container {
+            width: 80%;
+            max-width: 1200px;
+            margin: auto;
+        }
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            margin: 20px;
+            
+            width: calc(33% - 40px);
+            display: inline-block;
+            vertical-align: top;
+        }
+        .card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+        .card-content {
+            padding: 20px;
+        }
+        .card-content h2 {
+            margin: 0;
+            font-size: 1.5em;
+        }
+        .card-content p {
+            margin: 10px 0;
+        }
+        .card-content .amount {
+            font-size: 1.2em;
+            color: #333;
+        }
+
+    </style>
+
+</head>
+<body>
+    <div  style="width: 100vw; height: 100vh; background-color: #F5F5F5; display: flex;">
+        <nav style=" height: 100vh;">
+            <div style="height: 10vh;">
+                <img src="" alt="" srcset="">
+            </div>
+
+            <div>
+                <h5>overview</h5>
+
+                <a href="#" id="mock-interviews">
+                    <ul class="nav-item"> <svg width="3vh" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 12C12 11.4477 12.4477 11 13 11H19C19.5523 11 20 11.4477 20 12V19C20 19.5523 19.5523 20 19 20H13C12.4477 20 12 19.5523 12 19V12Z" stroke="#000000" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M4 5C4 4.44772 4.44772 4 5 4H8C8.55228 4 9 4.44772 9 5V19C9 19.5523 8.55228 20 8 20H5C4.44772 20 4 19.5523 4 19V5Z" stroke="#000000" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M12 5C12 4.44772 12.4477 4 13 4H19C19.5523 4 20 4.44772 20 5V7C20 7.55228 19.5523 8 19 8H13C12.4477 8 12 7.55228 12 7V5Z" stroke="#000000" stroke-width="2" stroke-linecap="round"/>
+                        </svg> Mock interviews</ul>
+                </a>
+
+
+
+                <ul class="nav-item" > <svg width="3vh" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M3 12V15.8C3 16.9201 3 17.4802 3.21799 17.908C3.40973 18.2843 3.71569 18.5903 4.09202 18.782C4.51984 19 5.0799 19 6.2 19H17.8C18.9201 19 19.4802 19 19.908 18.782C20.2843 18.5903 20.5903 18.2843 20.782 17.908C21 17.4802 21 16.9201 21 15.8V12M3 12H6.67452C7.16369 12 7.40829 12 7.63846 12.0553C7.84254 12.1043 8.03763 12.1851 8.21657 12.2947C8.4184 12.4184 8.59136 12.5914 8.93726 12.9373L9.06274 13.0627C9.40865 13.4086 9.5816 13.5816 9.78343 13.7053C9.96237 13.8149 10.1575 13.8957 10.3615 13.9447C10.5917 14 10.8363 14 11.3255 14H12.6745C13.1637 14 13.4083 14 13.6385 13.9447C13.8425 13.8957 14.0376 13.8149 14.2166 13.7053C14.4184 13.5816 14.5914 13.4086 14.9373 13.0627L15.0627 12.9373C15.4086 12.5914 15.5816 12.4184 15.7834 12.2947C15.9624 12.1851 16.1575 12.1043 16.3615 12.0553C16.5917 12 16.8363 12 17.3255 12H21M3 12L5.32639 6.83025C5.78752 5.8055 6.0181 5.29312 6.38026 4.91755C6.70041 4.58556 7.09278 4.33186 7.52691 4.17615C8.01802 4 8.57988 4 9.70361 4H14.2964C15.4201 4 15.982 4 16.4731 4.17615C16.9072 4.33186 17.2996 4.58556 17.6197 4.91755C17.9819 5.29312 18.2125 5.8055 18.6736 6.83025L21 12" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg> Inbox</ul>
+
+
+
+                <a href="#" id="show-courses">
+                    <ul class="nav-item"> <svg fill="#000000" width="3vh" viewBox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M1750.21 0v1468.235h-225.882v338.824h169.412V1920H451.387c-82.447 0-161.506-36.141-214.701-99.388-43.934-51.953-67.652-116.33-67.652-182.965V282.353C169.034 126.494 295.528 0 451.387 0H1750.21Zm-338.823 1468.235H463.81c-89.223 0-166.136 59.86-179.576 140.047-1.242 9.036-2.259 18.07-2.259 27.106v2.26c0 40.658 13.553 77.928 40.659 109.552 32.753 38.4 79.059 59.859 128.753 59.859h960v-112.941H409.599v-112.942h1001.788v-112.94Zm225.882-1355.294H451.387c-92.725 0-169.412 75.67-169.412 169.412v1132.8c50.824-37.27 113.958-59.859 181.835-59.859h1173.46V112.941ZM1354.882 903.53v112.942H564.294V903.529h790.588Zm56.47-564.705v451.764H507.825V338.824h903.529Zm-112.94 112.94H620.765v225.883h677.647V451.765Z" fill-rule="evenodd"/>
+                    </svg>Your Courses</ul>
+                </a>
+
+                <ul class="nav-item">
+                    <svg fill="#000000" height="3vh" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
+	 viewBox="0 0 204 204" xml:space="preserve">
+<path d="M139.185,157.339h25.175l-27.223,29.022v-26.974C137.137,158.257,138.056,157.339,139.185,157.339z M108.805,44.654
+	l7.761-1.004l-4.845-6.953L108.805,44.654z M179.518,5v142.339h-40.333c-6.644,0-12.048,5.405-12.048,12.048V204H29.482
+	c-2.762,0-5-2.239-5-5V5c0-2.761,2.238-5,5-5h145.035C177.279,0,179.518,2.239,179.518,5z M95.746,65.76
+	c0.568,0.208,1.148,0.307,1.721,0.307c2.038,0,3.953-1.256,4.694-3.281l2.765-7.546l18.084-2.34l4.595,6.594
+	c0.973,1.395,2.526,2.142,4.106,2.142c0.987,0,1.984-0.292,2.854-0.898c2.266-1.579,2.822-4.695,1.244-6.96l-21.377-30.677
+	c-0.008-0.011-0.019-0.02-0.027-0.031c-0.138-0.196-0.303-0.372-0.47-0.547c-0.061-0.064-0.113-0.141-0.177-0.201
+	c-0.132-0.124-0.286-0.226-0.432-0.336c-0.117-0.088-0.225-0.189-0.348-0.266c-0.094-0.059-0.202-0.098-0.301-0.151
+	c-0.193-0.103-0.384-0.209-0.588-0.285c-0.014-0.005-0.025-0.014-0.039-0.019c-0.117-0.043-0.237-0.057-0.354-0.091
+	c-0.183-0.052-0.364-0.11-0.552-0.141c-0.166-0.028-0.33-0.03-0.496-0.04c-0.157-0.01-0.313-0.028-0.471-0.024
+	c-0.169,0.005-0.333,0.034-0.5,0.056c-0.155,0.02-0.31,0.033-0.464,0.068c-0.166,0.038-0.324,0.099-0.486,0.154
+	c-0.145,0.049-0.292,0.089-0.434,0.153c-0.192,0.086-0.369,0.197-0.549,0.306c-0.09,0.055-0.185,0.091-0.273,0.152
+	c-0.01,0.007-0.018,0.017-0.028,0.024c-0.201,0.142-0.382,0.31-0.561,0.481c-0.061,0.058-0.132,0.107-0.19,0.167
+	c-0.121,0.128-0.219,0.278-0.326,0.419c-0.092,0.121-0.197,0.234-0.276,0.362c-0.052,0.083-0.086,0.18-0.134,0.267
+	c-0.111,0.205-0.222,0.409-0.303,0.626c-0.005,0.013-0.013,0.023-0.017,0.036L92.772,59.345
+	C91.822,61.938,93.153,64.81,95.746,65.76z M108.899,152.339c0-2.761-2.238-5-5-5H53.25c-2.762,0-5,2.239-5,5c0,2.761,2.238,5,5,5
+	h50.65C106.661,157.339,108.899,155.1,108.899,152.339z M130.157,121.839c0-2.761-2.238-5-5-5H53.25c-2.762,0-5,2.239-5,5
+	c0,2.761,2.238,5,5,5h71.907C127.919,126.839,130.157,124.6,130.157,121.839z M145.75,91.339c0-2.761-2.238-5-5-5h-87.5
+	c-2.762,0-5,2.239-5,5c0,2.761,2.238,5,5,5h87.5C143.512,96.339,145.75,94.1,145.75,91.339z M164.797,32.019
+	c-0.354-2.737-2.852-4.672-5.601-4.317l-6.681,0.865l-0.865-6.681c-0.354-2.738-2.851-4.673-5.601-4.317
+	c-2.738,0.354-4.672,2.862-4.317,5.6l0.865,6.681l-6.681,0.865c-2.738,0.354-4.672,2.861-4.317,5.6
+	c0.326,2.521,2.477,4.359,4.953,4.359c0.213,0,0.43-0.014,0.648-0.042l6.681-0.865l0.865,6.681c0.326,2.521,2.477,4.359,4.953,4.359
+	c0.213,0,0.43-0.014,0.647-0.042c2.738-0.354,4.672-2.862,4.317-5.6l-0.865-6.681l6.681-0.865
+	C163.218,37.265,165.151,34.758,164.797,32.019z"/>
+</svg>
+                    Quiz</ul>
+                
+
+            <a id="blogi" href="#">
+                <ul class="nav-item"></ul>
+                    <svg width="3vh" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                        <style>.cls-1{fill:none;stroke:#020202;stroke-miterlimit:10;stroke-width:1.92px;}</style>
+                        </defs>
+                        <g id="roll_brush" data-name="roll brush">
+                        <line class="cls-1" x1="5.24" y1="11.08" x2="18.66" y2="11.08"/>
+                        <line class="cls-1" x1="5.24" y1="18.76" x2="18.66" y2="18.76"/>
+                        <line class="cls-1" x1="5.24" y1="14.92" x2="18.66" y2="14.92"/>
+    
+                        <rect class="cls-1" x="1.4" y="1.49" width="21.1" height="21.1"/>
+                        
+                        <polygon class="cls-1" points="22.5 7.25 16.23 7.25 14.31 7.25 1.4 7.25 1.4 1.49 22.5 1.49 22.5 7.25"/>
+                        
+                        <line class="cls-1" x1="4.28" y1="4.37" x2="6.2" y2="4.37"/>
+                        
+                        <line class="cls-1" x1="8.11" y1="4.37" x2="10.03" y2="4.37"/>
+                        
+                        <line class="cls-1" x1="11.95" y1="4.37" x2="13.87" y2="4.37"/>
+                        
+                        </g>
+                        
+                        </svg>
+                    Blogs</ul>
+            </a>
+
+            </div>
+
+            <div>
+                <h5>Mentors</h5>
+                <ul>Ankur</ul>
+                <ul>Gaurav</ul>
+                <ul>Saransh</ul>
+            </div>
+
+            <div>
+                <h5>Settings</h5>
+                <ul>settings</ul>
+                <ul style="color: rgba(255, 0, 0, 0.726);">
+                    
+<svg  viewBox="-7.5 0 156 156" fill="red" width="3vh" stroke="red" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0)">
+<path d="M40.8239 73.1949C36.8128 73.4046 32.8018 73.6066 28.791 73.8033C28.562 73.8143 28.3317 73.8202 28.1013 73.826C27.4184 73.826 26.7365 73.8817 26.0626 73.993C23.92 74.4073 22.8368 75.6119 23.0891 77.2897C23.242 78.3008 24.0981 79.9553 25.2478 80.3036C27.6004 81.057 30.0406 81.5011 32.5071 81.6241C36.8349 81.7697 41.4749 81.7503 47.1052 81.5626C62.571 81.0479 78.0361 80.5146 93.5013 79.9618C101.839 79.6698 110.177 79.3786 118.515 79.0886C119.483 79.0536 120.471 79.0614 121.72 79.0711L122.488 79.0763C121.867 79.7132 121.267 80.3262 120.688 80.9172C118.701 82.9497 116.984 84.7052 115.269 86.5332C113.642 88.268 112.021 90.0584 110.454 91.7899C109.378 92.9784 108.299 94.1649 107.217 95.3501C105.468 97.2499 103.706 99.1375 101.957 101.011L99.6348 103.498C99.5393 103.601 99.4793 103.732 99.4626 103.872C99.4458 104.012 99.4729 104.152 99.5413 104.275L100.726 106.387C100.783 106.49 100.867 106.576 100.969 106.635C101.07 106.695 101.186 106.726 101.303 106.726C101.38 106.726 101.457 106.713 101.529 106.687C101.744 106.609 101.959 106.545 102.166 106.484C102.666 106.366 103.143 106.167 103.579 105.897C115.202 97.8092 126.338 89.0408 136.93 79.6362C137.972 78.7319 138.895 77.7001 139.679 76.5641C141.406 74.0163 141.002 71.2562 138.597 69.19C137.983 68.689 137.33 68.2372 136.644 67.8404L132.828 65.479C125.119 60.7048 117.15 55.7697 109.287 50.9466C108.13 50.1343 106.818 49.5689 105.434 49.286C104.793 49.242 104.15 49.3495 103.557 49.5995C102.964 49.8495 102.437 50.2354 102.019 50.726C101.39 51.6412 101.224 53.5737 101.928 54.5181C103.146 56.1716 104.632 57.609 106.323 58.7705C109.083 60.6328 111.935 62.455 114.688 64.2163C117.052 65.7269 119.496 67.2895 121.869 68.8683C122.321 69.1699 122.807 69.4353 123.275 69.6917C124.431 70.2095 125.446 70.996 126.237 71.9857C125.473 71.9152 124.718 71.8394 123.97 71.763C121.572 71.4769 119.16 71.3196 116.744 71.2931L114.845 71.308C99.6355 71.4271 83.9077 71.5501 68.4439 71.9792C59.2329 72.2356 49.8742 72.723 40.8239 73.1949Z" />
+<path d="M61.6949 1.97721C59.7594 1.69952 35.0923 0.253946 20.6297 0.17627C18.5839 0.283722 16.3033 0.4568 14.0981 0.624451C12.4794 0.747436 10.8787 0.869414 9.39487 0.963273C5.58453 1.20472 3.20649 3.37646 2.51745 7.24601C2.13176 9.67527 1.90312 12.1269 1.83295 14.5857C0.907144 34.3362 1.1155 54.4132 1.31679 73.8306C1.36496 78.4478 1.40798 83.0657 1.44583 87.6829C1.52067 98.0184 1.74325 108.885 2.12647 120.904C2.30131 126.376 2.5955 131.931 2.88067 137.304C3.05938 140.677 3.23809 144.05 3.3897 147.424C3.58325 151.673 5.24263 153.897 8.94648 154.857C11.04 155.321 13.1756 155.567 15.3194 155.59L16.2742 155.635C18.9194 155.764 21.9465 155.824 25.1904 155.824C39.0026 155.824 56.6807 154.8 64.7304 154.283C65.7502 154.217 66.7076 153.765 67.4056 153.017C68.1044 152.268 68.4921 151.279 68.4895 150.254C68.4869 149.228 68.094 148.243 67.3914 147.498C66.6895 146.753 65.7302 146.305 64.7097 146.245C59.3723 145.93 49.5426 145.339 43.6774 144.927C38.1871 144.538 32.5994 144.294 27.1949 144.06C24.0897 143.926 20.9845 143.792 17.8807 143.629C16.8793 143.558 15.8823 143.433 14.8942 143.255C14.56 143.201 14.2233 143.147 13.882 143.096C13.8368 142.816 13.791 142.548 13.7471 142.29C13.6096 141.576 13.5126 140.854 13.4568 140.129C13.24 136.208 12.9891 132.223 12.7471 128.369C12.1665 119.193 11.5684 109.704 11.4 100.371C11.1136 84.5539 11.142 68.4632 11.1749 52.9018C11.1844 47.915 11.1905 42.9281 11.1936 37.9405C11.1936 30.4441 11.3471 22.9977 11.4968 16.7021C11.5342 15.1246 11.7007 13.5581 11.8929 11.743C11.9704 11.0148 12.051 10.2543 12.1278 9.44457C14.3781 9.29181 19.031 9.18041 24.7923 9.04383C39.5458 8.69299 59.7516 8.21133 63.4936 6.48303C63.5811 6.44258 63.6587 6.38352 63.7211 6.30985C63.7835 6.23617 63.8292 6.15018 63.8549 6.05699C64.0321 5.57891 64.104 5.06748 64.0657 4.55884C64.0275 4.0502 63.8798 3.55593 63.6329 3.10999C63.4114 2.79112 63.1233 2.52496 62.7885 2.32931C62.4538 2.13367 62.0805 2.01324 61.6949 1.97721Z" />
+</g>
+<defs>
+<clipPath id="clip0">
+<rect width="140" height="156" fill="white" transform="translate(0.777344)"/>
+</clipPath>
+</defs>
+</svg>
+                    logout</ul>
+            </div>
+        </nav>
+        <div style="width: 84vw; height: 100vh;">
+
+  
+        <div class="search-container">
+            <form action="/search-mentors" method="GET">
+                <input style="width: 80vw; height: 5vh; border-radius: 20px;" id="searchQuery" type="text" name="searchQuery" placeholder="Search mentors ...">
+            </form>
+            <ul style="width: 81vw;margin-right: 69vw;
+    " id="results"></ul>
+        </div>
+    
+
+  
+
+
+
+
+   <div style="display: flex;">
+    <div style="overflow-y: scroll; overflow-x: hidden;">
+
+        <div style="background-color: violet; width: 60vw; height: 35%; border-radius: 18px; margin-left: 0.75vw;">
+        </div>
+        
+        <div style="display: flex; gap: 0.75vh;" class="cards-marquee" id="ui">
+           
+            
+        
+            <a id="photography" href="#">
+                <div class="card" style="display: flex;align-items: center; margin-left: 0.75vw; background-color: #FFFFFF; width: 17.5vw; height: 10vh; border-radius: 16px; margin-top:1vh; border:2px solid black;">
+                    <img class="course-avatar" style="width: 8vh; height: 8vh; border-radius: 100%; background-color: #ccc;" src="https://images.unsplash.com/photo-1531493247453-ebe4cbddb2b0?q=80&w=1480&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="">
+                    <h4 style="margin-left: 0.75vw;">Photography</h4>
+                </div>
+            </a>
+
+            <a id="photo" href="#">
+                <div class="card" style="display: flex;align-items: center; margin-left: 0.75vw; background-color: #FFFFFF; width: 17.5vw; height: 10vh; border-radius: 16px; margin-top:1vh; border:2px solid black;">
+                    <img class="course-avatar" style="width: 8vh; height: 8vh; border-radius: 100%; background-color: #ccc;" src="https://images.unsplash.com/photo-1531493247453-ebe4cbddb2b0?q=80&w=1480&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="">
+                    <h4 style="margin-left: 0.75vw;">Photo</h4>
+                </div>
+            </a>
+        
+           <a id="language" href="#">
+            <div  class="card" style="display: flex;align-items: center;  margin-left: 0.75vw; background-color: #FFFFFF; width: 17.5vw; height: 10vh; border-radius: 16px; margin-top:1vh; border:2px solid black;">
+                <img class="course-avatar" style="width: 8vh; height: 8vh; border-radius: 100%; background-color: #ccc;" src="https://plus.unsplash.com/premium_photo-1723852804013-316fc37554bb?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="">
+        
+                <h4 style="margin-left: 0.75vw;">Foreign Languages</h4>
+            </div>
+           </a>
+           
+
+        </div>
+    
+        <div class="nav2" style="display: flex; justify-content: space-between;width: 58vw; align-items: center;">
+            <h2>Continue Watching</h2>
+            <div>
+              <a id="forward-button" href="#">
+                <button  class="forward-button" style="width: 6.5vw; height: 2.5vw; background-color: white; border-radius: 100%; border: none;cursor: pointer;">Explore Courses</button>
+              </a>
+               
+            </div>
+           
+        </div>
+    
+        
+    
+        <div class="container" id="courses-container" style="background-color: white; width: 58vw; 
+    height: 54vh; margin-left: 0.75vw; border-radius: 15px; padding: 1vh; display: flex; gap: 0px;">
+           
+           
+            
+    
+        </div>
+    
+       </div>
+    
+       <div style="width: 23vw; height: 89vh; background-color: #aaaaaa41; border-radius: 10px;">
+        <h2 style="font-size: larger; margin-left: 1vw;">Mentorship Sessions</h2>
+        <div style="color: white; display: none;" id="menteeIdContainer"></div>
+        <ul id="meetingLinksList"></ul>
+       </div>
+   </div>
+
+</div>
+
+
+    </div>
+
+<script>
+     function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            const paramValue = urlParams.get(param);
+
+            if (paramValue) {
+                // If the parameter value contains 'ObjectId', extract the actual ID
+                const objectIdMatch = paramValue.match(/ObjectId\(['"]([a-fA-F0-9]{24})['"]\)/);
+                if (objectIdMatch && objectIdMatch[1]) {
+                    return objectIdMatch[1];
+                } else if (paramValue.length === 24 && /^[a-fA-F0-9]{24}$/.test(paramValue)) {
+                    // Direct ID (24 hex characters) case
+                    return paramValue;
+                }
+            }
+            return null;
+        }
+
+        
+        
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const menteeId = getQueryParam('menteeId');
+            if (menteeId) {
+                console.log('Mentee ID:', menteeId); 
+
+                document.getElementById('menteeIdContainer').textContent = `Mentee ID: ${menteeId}`;
+
+                fetch('/3courses')
+                .then(response => response.json())
+                .then(courses => {
+                    const container = document.getElementById('courses-container');
+                    courses.forEach(course => {
+                        const card = document.createElement('div');
+                        card.className = 'card';
+                        
+                        card.innerHTML = `
+                            <img src="${course.avatar.url || 'https://via.placeholder.com/500x200'}" alt="${course.title}">
+                            <div class="card-content">
+                                <h2>${course.title}</h2>
+                                <p>${course.description || 'No description available.'}</p>
+                                <p class="amount">Amount: $${course.amount || '0.00'}</p>
+                            </div>
+                        `;
+                        
+                        container.appendChild(card);
+                    });
+                })
+                .catch(err => {
+                    console.error('Error fetching courses:', err);
+                });
+
+
+     document.getElementById('forward-button').href = `/coursess/${menteeId}`;
+                document.getElementById('show-courses').href = `/your-courses/${menteeId}`;
+
+                document.getElementById('mock-interviews').href = `/mock-interviews/${menteeId}`;
+                document.getElementById('blogi').href = `/blogi/${menteeId}`;
+
+                document.getElementById('photo').href = `/photo/${menteeId}`;
+                document.getElementById('photography').href = `/photography/${menteeId}`;
+                document.getElementById('language').href = `/language/${menteeId}`;
+
+                // Fetch and display meeting links
+                fetch(`/mentee/meeting-links/${menteeId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const meetingLinksList = document.getElementById('meetingLinksList');
+                        if (meetingLinksList) {
+                            meetingLinksList.innerHTML = ''; // Clear previous links
+                            data.meetingLinks.forEach(link => {
+                                const li = document.createElement('li');
+                                const linkElement = document.createElement('a');
+                                linkElement.href = link.link;
+                                linkElement.textContent = `Meeting on ${new Date(link.date).toLocaleDateString()} at ${new Date(link.date).toLocaleTimeString()}`;
+                                linkElement.target = '_blank'; // Open link in a new tab
+
+                                li.appendChild(linkElement);
+                                meetingLinksList.appendChild(li);
+                            });
+                        } else {
+                            console.error('Element with ID "meetingLinksList" not found.');
+                        }
+                    })
+                    .catch(error => console.error('Error fetching meeting links:', error));
+            } else {
+                console.error('Invalid or missing menteeId.');
+            }
+
+            const searchQuery = document.getElementById('searchQuery');
+            if (searchQuery) {
+                searchQuery.addEventListener('input', function () {
+                    const query = this.value.trim(); 
+
+                   
+                    if (query.length > 1) { 
+                        fetch(`/mentor/search?query=${encodeURIComponent(query)}`)
+                            .then(response => response.json())
+                            .then(data => {
+                                const resultsContainer = document.getElementById('results');
+                                if (resultsContainer) {
+                                    resultsContainer.innerHTML = ''; // Clear previous results
+                                    data.forEach(mentor => {
+                                        const li = document.createElement('li');
+                                        li.textContent = `${mentor.name} - ${mentor.company}`;
+
+                                        // Create and append "View Mentor" button
+                                        const viewMentorButton = document.createElement('button');
+                                        viewMentorButton.textContent = 'View Mentor';
+                                        viewMentorButton.addEventListener('click', () => {
+                                            // Redirect to mentor details page
+                                            window.location.href = `/mentor/details/${mentor._id}?menteeId=${menteeId}`;
+                                        });
+
+                                        li.appendChild(viewMentorButton);
+                                        resultsContainer.appendChild(li);
+                                    });
+                                } else {
+                                    console.error('Element with ID "results" not found.');
+                                }
+                            })
+                            .catch(error => console.error('Error fetching mentors:', error));
+                    } else {
+                        // Clear results if search query is too short
+                        const resultsContainer = document.getElementById('results');
+                        if (resultsContainer) {
+                            resultsContainer.innerHTML = '';
+                        }
+                    }
+                });
+            } else {
+                console.error('Element with ID "searchQuery" not found.');
+            }
+        });
+</script>
+
+</body>
+</html>

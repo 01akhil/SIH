@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upload Course</title>
+  <script>
+    function uploadCourse(event) {
+      event.preventDefault();  // Prevent default form submission behavior
+
+      // Get the file from the input
+      const fileInput = document.querySelector('input[type="file"]');
+      const file = fileInput.files[0];
+
+      if (!file) {
+        alert('No file selected!');
+        return;
+      }
+
+      // Create FormData object to send file via AJAX
+      const formData = new FormData();
+      formData.append('courseFile', file);
+
+      // Make AJAX request to upload file
+      fetch('/upload', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Success:', data);
+        document.getElementById('fileUrl').innerText = 'File URL: ' + data.fileUrl;
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Error uploading file!');
+      });
+    }
+  </script>
+</head>
+<body>
+  <h1>Upload Course</h1>
+
+  <form onsubmit="uploadCourse(event)">
+    <input type="file" name="courseFile" accept="image/*, video/*, .pdf" />
+    <button type="submit">Upload Course</button>
+  </form>
+
+  <p id="fileUrl"></p>
+</body>
+</html>

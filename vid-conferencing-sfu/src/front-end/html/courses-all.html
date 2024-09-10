@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Courses</title>
+    <style>
+        .course-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            gap: 20px;
+        }
+
+        .course-card {
+            width: 300px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f9f9f9;
+            cursor: pointer;
+        }
+
+        .course-card img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+
+        .course-info {
+            text-align: center;
+        }
+
+        .course-title {
+            font-size: 20px;
+            margin: 10px 0;
+        }
+
+        .course-description {
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        .course-price {
+            font-size: 18px;
+            color: #2b8a3e;
+            margin: 10px 0;
+        }
+
+        .buy-now-btn {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .buy-now-btn:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Available Courses</h1>
+    <div class="course-container" id="course-container"></div>
+
+    <script>
+        // Fetch courses from /courses endpoint
+        async function fetchCourses() {
+            try {
+                const response = await fetch('/courses');
+                const courses = await response.json();
+
+                const courseContainer = document.getElementById('course-container');
+                courses.forEach(course => {
+                    // Create a card for each course
+                    const courseCard = document.createElement('div');
+                    courseCard.classList.add('course-card');
+                    courseCard.setAttribute('data-course-id', course._id); // Attach course ID
+
+                    courseCard.innerHTML = `
+                        <img src="${course.avatar.url}" alt="Course Avatar">
+                        <div class="course-info">
+                            <div class="course-title">${course.title}</div>
+                            <div class="course-description">${course.description}</div>
+                            <div class="course-price">$${course.amount}</div>
+                            <button class="buy-now-btn" onclick="buyCourse('${course._id}', event)">Buy Now</button>
+                        </div>
+                    `;
+
+                    // Add click event to the course card
+                    courseCard.addEventListener('click', function() {
+                        const courseId = this.getAttribute('data-course-id');
+                        const menteeId = getMenteeIdFromUrl(); // Ensure this function is defined and retrieves the mentee ID from the URL
+                        window.location.href = `/courses/${menteeId}/${courseId}`;
+                    });
+
+                    courseContainer.appendChild(courseCard);
+                });
+            } catch (error) {
+                console.error('Error fetching courses:', error);
+            }
+        }
+
+        async function buyCourse(courseId, event) {
+            event.stopPropagation(); // Prevent the click event from propagating to the course card
+
+            const menteeId = getMenteeIdFromUrl(); 
+            const type = 'course'; 
+
+            try {
+                const response = await fetch('http://localhost:3000/payment', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        courseId,
+                        menteeId,
+                        type
+                    })
+                });
+                
+                const data = await response.json();
+                console.log('Response:', data); // Log response to verify structure
+                
+                if (data && data.links && data.links.length > 0) {
+                    const approvalUrl = data.links.find(link => link.rel === 'approval_url');
+                    if (approvalUrl && approvalUrl.href) {
+                        window.location.href = approvalUrl.href;
+                    } else {
+                        console.error('Approval URL not found in response:', data);
+                    }
+                } else {
+                    console.error('Invalid response structure:', data);
+                }
+            } catch (error) {
+                console.error('Error during payment:', error);
+            }
+        }
+
+        // Fetch courses when page loads
+        fetchCourses();
+
+        function getMenteeIdFromUrl() {
+        const pathParts = window.location.pathname.split('/');
+        return pathParts[2] || null;
+    }
+    </script>
+</body>
+</html>

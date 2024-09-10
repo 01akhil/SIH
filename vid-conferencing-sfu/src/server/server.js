@@ -6,8 +6,12 @@ import { Server } from 'socket.io'
 import mediasoup from 'mediasoup'
 import path from 'path'
 
+import mongoose from 'mongoose';
+
 import authenticateToken from './middleware/authMiddleware.js';
-import checkLinkActivation from './middleware/checkLinkActivation.js'; //
+import checkLinkActivation from './middleware/checkLinkActivation.js'; 
+import checkCourseAccess from './middleware/checkCourseAccess.js';
+
 import cookieParser from 'cookie-parser';
 import authRoutes from './routes/auth.js';  
 import mentorRoutes from './routes/mentor.js'; 
@@ -18,6 +22,9 @@ import Blog from './models/Blog.js';
 
 import Mentor from './models/Mentor.js'; 
 import Mentee from './models/Mentee.js'
+import Course from './models/Course.js';
+import CourseAccess from './models/Access.js';
+
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -30,12 +37,123 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.json());
 
-
 const __dirname = path.resolve()
 app.use(express.static(path.join(__dirname))); 
 
+//<-------------------------------show courses---------------------------------->
 
-//all end-points are here
+app.get('/courses', async (req, res) => {
+  console.log("request reached");
+  try {
+      const courses = await Course.find().exec();
+      console.log(courses);
+      res.json(courses);
+  } catch (err) {
+      res.status(500).json({ message: 'Error fetching courses', error: err });
+  }
+});
+
+
+
+app.get('/3courses', authenticateToken, async (req, res) => {
+  try {
+      const courses = await Course.find().limit(3).exec();
+      res.json(courses);
+  } catch (err) {
+      res.status(500).json({ message: 'Error fetching courses', error: err });
+  }
+});
+
+app.get('/course/:menteeId/:courseId',authenticateToken, checkCourseAccess,  async (req, res) => {
+  try {
+    const { courseId } = req.params;
+    const { hasAccess } = req;
+
+    // Fetch the course details
+    const course = await Course.findById(courseId).exec();
+    
+    if (!course) {
+      return res.status(404).json({ message: 'Course not found' });
+    }
+
+
+    const response = {
+      title: course.title,
+      description: course.description,
+      amount: course.amount,
+      avatar: course.avatar,
+      category: course.category,
+      createdAt: course.createdAt,
+    };
+
+    if (hasAccess) {
+      response.lectures = course.lectures;
+    } else {
+      response.lectures = course.lectures.map(lecture => ({
+        thumbnail: lecture.thumbnail,
+      }));
+    }
+
+    res.json({ course: response });
+    console.log(response);
+  } catch (err) {
+    res.status(500).json({ message: 'Error fetching course details', error: err });
+  }
+});
+
+app.get('/courses/:menteeId/:courseId',authenticateToken,(req,res)=>{
+  res.sendFile(path.join(__dirname,'courseDetails.html'));
+})
+
+
+
+app.get('/courses/:category', authenticateToken, async (req, res) => {
+  const {  category } = req.params;
+
+  try {
+      
+      const courses = await Course.find({ category: category }).exec();
+
+      res.json(courses);
+  } catch (err) {
+      // Handle errors
+      res.status(500).json({ message: 'Error fetching courses', error: err });
+  }
+});
+
+app.get('/access-course/:menteeId', async (req, res) => {
+  const menteeId = req.params.menteeId;
+
+  try {
+      // Find course IDs for the given mentee
+      // const accessEntries = await CourseAccess.find({ menteeId: mongoose.Types.ObjectId(menteeId) });
+      const accessEntries = await CourseAccess.find({ menteeId:new mongoose.Types.ObjectId(menteeId) });
+      const courseIds = accessEntries.map(entry => entry.courseId);
+
+      // Fetch course details
+      const courses = await Course.find({ _id: { $in: courseIds } });
+
+      // Return courses
+      res.json(courses);
+  } catch (error) {
+      console.error(error);
+      res.status(500).send('Server error');
+  }
+});
+
+//<-----------------------------------upload course----------------------------------------->
+import { upload } from './middleware/uploadMiddleware.js';
+import { uploadCourse,uploadPhoto } from './controllers/uploadController.js';
+
+app.post('/upload', upload.array('courseFiles'), uploadCourse);
+ 
+app.post('/uploadi', upload.fields([
+  { name: 'lecture0_thumbnail', maxCount: 1 },
+  { name: 'lecture0_video', maxCount: 1 },
+  { name: 'lecture1_thumbnail', maxCount: 1 },
+  { name: 'lecture1_video', maxCount: 1 },
+]), uploadCourse);
+//<------------------------------------------------------------------------------------------------->
 app.get('/blogs', async (req, res) => {
   try {
       const blogs = await Blog.find();
@@ -46,9 +164,44 @@ app.get('/blogs', async (req, res) => {
 });
 
 app.get('/',(req,res)=>{
-    res.sendFile(path.join(__dirname,'landing.html'));
+    res.sendFile(path.join(__dirname,'landing1.html'));
 })
 
+// app.get('/courses/:id',authenticateToken, (req,res)=>{
+//   res.sendFile(path.join(__dirname,'courses-all.html'));
+// })
+
+app.get('/coursess/:menteeId',authenticateToken, (req,res)=>{
+  res.sendFile(path.join(__dirname,'courses-all.html'));
+})
+app.get('/language/:menteeId',authenticateToken,(req,res)=>{
+  res.sendFile(path.join(__dirname,'language.html'));
+})
+
+app.get('/blogi/:menteeId',authenticateToken,(req,res)=>{
+  res.sendFile(path.join(__dirname,'blog-mentee.html'));
+})
+
+app.get('/photography/:menteeId',authenticateToken,(req,res)=>{
+  res.sendFile(path.join(__dirname,'photography.html'));
+})
+app.get('/photo/:menteeId',authenticateToken,(req,res)=>{
+  res.sendFile(path.join(__dirname,'photography.html'));
+})
+
+app.get('/your-courses/:menteeId',authenticateToken, (req,res)=>{
+  res.sendFile(path.join(__dirname,'your-courses.html'));
+})
+
+app.get('/mock-interviews/:menteeId',authenticateToken, (req,res)=>{
+  res.sendFile(path.join(__dirname,'mock-interviews.html'));
+})
+
+
+
+app.get('/page', authenticateToken,(req,res)=>{
+  res.sendFile(path.join(__dirname,'page.html'));
+})
 app.get('/mentor/details/:id',authenticateToken, (req, res) => {
     res.sendFile(path.join(__dirname,  'mentor-details.html'));
 });
@@ -57,7 +210,7 @@ app.get('/mentor/courses/:id', authenticateToken,(req,res)=>{
   res.sendFile(path.join(__dirname,  'mentor-courses.html'));
 })
 
-app.get('/mentor/create-course/:id', authenticateToken,(req,res)=>{
+app.get('/mentor/create-course/:id/:id1', authenticateToken,(req,res)=>{
   res.sendFile(path.join(__dirname,  'create-course.html'));
 })
 
@@ -81,13 +234,15 @@ app.get('/auth/mentor/login', (req, res) => {
   res.sendFile(path.join(__dirname, 'mentor-login.html'));
 });
 
+
+
 app.get('/mentor/profile', authenticateToken, (req, res) => {
   const mentorId = req.query.mentorId;
   res.sendFile(path.join(__dirname, 'mentor-profile.html'),{mentorId});
 });
 app.get('/mentor/dashboard', authenticateToken, (req, res) => {
   const mentorId = req.query.mentorId;
-  res.sendFile(path.join(__dirname, 'mentor-dashboard.html'),{mentorId});
+  res.sendFile(path.join(__dirname, 'page2.html'),{mentorId});
 });
 app.get('/mentee/profile', authenticateToken, (req, res) => {
   const menteeId= req.query.mentorId;
@@ -97,15 +252,12 @@ app.get('/mentee/profile', authenticateToken, (req, res) => {
 
 app.get('/mentee/dashboard', authenticateToken, (req, res) => {
   const menteeId = req.query.menteeId;
-  res.sendFile(path.join(__dirname, 'mentee-dashboard.html'),{menteeId});
+  res.sendFile(path.join(__dirname, 'page.html'),{menteeId});
 });
 
 
 //<--------------------------------------------------------------------------------------------------------------------------------->
 
-// app.get('/paymentSuccess',authenticateToken, (req, res) => {
-//   res.sendFile(path.join(__dirname, 'paymentSuccess.html'));
-// });
 app.get('/paymentFailed',authenticateToken, (req, res) => {
   res.sendFile(path.join(__dirname, 'paymentFailed.html'));
 });
@@ -113,6 +265,35 @@ app.get('/paymentButton',authenticateToken, (req, res) => {
   res.sendFile(path.join(__dirname, 'paymentButton.html'));
 });
 
+app.get('/:id/courses',authenticateToken, (req, res) => {
+  res.sendFile(path.join(__dirname, 'mentor-own-courses.html'));
+});
+
+app.get('/mentor/:id/course/:id',authenticateToken, (req, res) => {
+  res.sendFile(path.join(__dirname, 'mentor-lecture.html'));
+});
+
+// app.get('/courses/:courseId/lecturess', async (req, res) => {
+//   const { courseId } = req.params;
+
+//   console.log('Received request for course ID:', courseId); // Log the course ID received
+
+//   try {
+//       // Find the course and populate its lectures
+//       const course = await Course.findById(courseId).populate('lectures');
+
+//       if (!course) {
+//           console.log('Course not found for ID:', courseId); // Log if course is not found
+//           return res.status(404).json({ message: 'Course not found' });
+//       }
+
+//       console.log('Course data:', course); // Log the course data before sending response
+//       res.json(course.lectures);
+//   } catch (error) {
+//       console.error('Error fetching lectures:', error); // Log any errors that occur
+//       res.status(500).json({ message: 'Internal Server Error' });
+//   }
+// });
 
 
 
@@ -125,6 +306,57 @@ const io = new Server(httpsServer) //initializing the new socket.io instance and
 
 
 const connections = io.of('/vidCalling') //using namespace "vidCalling" to connect with client and have a seperate channel to facilitate video calling with client
+
+
+//<---------------------------------------------------------------------------------->
+
+app.get('/mentor/:mentorId/courses', async (req, res) => {
+  try {
+      const { mentorId } = req.params;
+
+      // Find the mentor and populate the courses
+      const mentor = await Mentor.findById(mentorId).populate('courses').exec();
+
+      if (!mentor) {
+          return res.status(404).json({ message: 'Mentor not found' });
+      }
+
+      res.json(mentor.courses);
+  } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: 'Server error' });
+  }
+});
+
+
+//<---------------------------------------------------------------------------------->
+app.get('/paid-mentorship/:menteeId', async (req, res) => {
+  const { menteeId } = req.params;
+
+  try {
+      if (!mongoose.Types.ObjectId.isValid(menteeId)) {
+          return res.status(400).json({ error: 'Invalid menteeId' });
+      }
+
+      const mentee = await Mentee.findById(menteeId)
+          .populate({
+              path: 'paidMentorships.mentorId',
+              select: 'name profileImage',
+              model: Mentor
+          });
+
+      if (!mentee) {
+          return res.status(404).json({ error: 'Mentee not found' });
+      }
+
+      // Return the paid mentorship sessions
+      res.json(mentee.paidMentorships);
+  } catch (error) {
+      console.error('Error fetching paid mentorships:', error);
+      res.status(500).send('Server error');
+  }
+});
+
 
 //<----------------------------------code for payPal integration------------------------------>
 
@@ -141,9 +373,11 @@ paypal.configure({
 });
 
 app.post('/payment', async (req, res) => {
-  const { mentorId, menteeId, startTime, endTime, returnUrl } = req.body;
+  const { mentorId, menteeId, startTime, endTime, returnUrl, type, courseId} = req.body;
 
-  const create_payment_json = {
+
+  if (type == 'mock interview') {
+    const create_payment_json = {
       "intent": "sale",
       "payer": {
           "payment_method": "paypal"
@@ -183,6 +417,100 @@ app.post('/payment', async (req, res) => {
           }
       }
   });
+}
+
+else if (type === 'course') {
+  console.log("payment inititated for course")
+  const create_payment_json = {
+    "intent": "sale",
+    "payer": {
+        "payment_method": "paypal"
+    },
+   "redirect_urls": {
+            "return_url": `http://localhost:3000/paymentSuccess1?menteeId=${menteeId}&courseId=${courseId}&returnUrl=${encodeURIComponent(returnUrl)}`,
+                "cancel_url": "http://localhost:3000/paymentFailed"
+      },
+    "transactions": [{
+        "item_list": {
+            "items": [{
+                "name": "Course Enrollment",
+                "sku": "course_enrollment",
+                "price": "50.00",
+                "currency": "USD",
+                "quantity": 1
+            }]
+        },
+        "amount": {
+            "currency": "USD",
+            "total": "50.00"
+        },
+        "description": "Payment for course enrollment."
+    }]
+  };
+
+  paypal.payment.create(create_payment_json, function (error, payment) {
+    console.log("reached here");
+    if (error) {
+        console.error('Error creating payment:', error);
+        res.status(500).send('Error creating payment');
+    } else {
+        const approvalUrl = payment.links.find(link => link.rel === 'approval_url');
+        if (approvalUrl) {
+            res.json({ links: [approvalUrl] });
+        } else {
+            res.status(500).send('Approval URL not found');
+        }
+    }
+});
+
+app.get('/paymentSuccess1', async (req, res) => {
+  console.log("reached there");
+    const { courseId, menteeId, paymentId, PayerID } = req.query;
+
+    console.log(paymentId)
+    console.log(courseId)
+    console.log(menteeId)
+    console.log(PayerID)
+
+  if (!courseId || !menteeId || !paymentId || !PayerID) {
+      return res.status(400).send('Missing required query parameters');
+  }
+
+  paypal.payment.execute(paymentId, { "payer_id": PayerID }, async function (error, payment) {
+      if (error) {
+          console.error('Error executing payment:', error);
+          return res.status(500).send('Payment execution failed');
+      }
+
+      try {
+        console.log("in try block");
+        const mentee = await Mentee.findById(menteeId);
+        if (!mentee) {
+            console.error('User not found:', menteeId);
+            return res.status(404).send('User not found');
+        }
+        
+        const courseAccess = new CourseAccess({
+            menteeId: menteeId,
+            courseId: courseId
+        });
+        await courseAccess.save();
+
+        // Redirect to the course page
+        res.redirect(`/coursess/${menteeId}`);
+    } catch (err) {
+        console.error('Error updating user or saving payment record:', err);
+        res.status(500).send('Failed to update user or save payment record');
+    }
+
+
+  });
+});
+
+}
+
+
+  
 });
 
 //-----------------------------------------------------------------------------------------------------------
@@ -366,15 +694,7 @@ socket.on('joinRoom', (roomName) => {
 
 
 
-
-
-
-
-
 //<------------------------------code for sharing files------------------------------------------------->
-
-
-
 io.of('/fileShare').on('connection', (socket) => {
   console.log("File sharing functionality active");
 

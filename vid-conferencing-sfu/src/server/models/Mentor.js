@@ -21,6 +21,8 @@ const mentorSchema = new mongoose.Schema({
     experienceLevel: { type: String, required: false },
     bio: { type: String, required: false },
 
+    profileImage: { type: String,required:false } ,
+
     mentees: [{ type: Schema.Types.ObjectId, ref: 'Mentee' }],
     meetingLinks: [
         {

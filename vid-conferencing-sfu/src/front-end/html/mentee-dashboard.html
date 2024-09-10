@@ -311,7 +311,7 @@ main {
                             .then(data => {
                                 const resultsContainer = document.getElementById('results');
                                 if (resultsContainer) {
-                                    resultsContainer.innerHTML = ''; // Clear previous results
+                                    resultsContainer.innerHTML = ''; 
                                     data.forEach(mentor => {
                                         const li = document.createElement('li');
                                         li.textContent = `${mentor.name} - ${mentor.company}`;

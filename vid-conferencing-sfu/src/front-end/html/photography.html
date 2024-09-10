@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Courses by Category</title>
+    <style>
+        .course-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px;
+            width: calc(33% - 32px);
+            box-sizing: border-box;
+            display: inline-block;
+            vertical-align: top;
+            text-align: center;
+            background-color: #fff;
+        }
+
+        .course-card img {
+            max-width: 100px;
+            border-radius: 8px;
+        }
+
+        .course-card h2 {
+            font-size: 1.5em;
+            margin: 16px 0;
+        }
+
+        .course-card p {
+            font-size: 1em;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <h1>Courses in photography Category</h1>
+    <div id="courses-container"></div>
+
+    <script>
+ function getMenteeIdFromUrl() {
+            const pathParts = window.location.pathname.split('/');
+            return pathParts[2] || null; 
+        }
+
+document.addEventListener('DOMContentLoaded', () => {
+            const menteeId = getMenteeIdFromUrl(); 
+            console.log(menteeId);
+            fetchCoursesByCategory('photography'); 
+
+            async function fetchCoursesByCategory(category) {
+            try {
+                const response = await fetch(`/courses/${category}`);
+                const courses = await response.json();
+
+                if (Array.isArray(courses)) {
+                    const container = document.getElementById('courses-container');
+                    container.innerHTML = '';
+
+                    courses.forEach(course => {
+                        const card = document.createElement('div');
+                        card.className = 'course-card';
+                        card.dataset.courseId = course._id;
+
+                        card.innerHTML = `
+                            <img src="${course.avatar.url || 'placeholder.jpg'}" alt="${course.title}">
+                            <h2>${course.title}</h2>
+                            <p>${course.description || 'No description available'}</p>
+                        `;
+                        
+
+                        card.addEventListener('click', (event) => {
+                            
+                                const courseId = card.dataset.courseId;
+                                window.location.href = `/courses/${menteeId}/${courseId}`;
+                            
+                        });
+
+                        container.appendChild(card);
+                    });
+                } else {
+                    console.error('No courses found for this category');
+                }
+            } catch (error) {
+                console.error('Error fetching courses:', error);
+            }
+        }
+        });
+
+       
+
+     
+    </script>
+</body>
+</html>

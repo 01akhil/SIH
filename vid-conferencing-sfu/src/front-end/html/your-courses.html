@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mentee Courses</title>
+    <style>
+       .course-card {
+    border: 1px solid #e0e0e0; /* Lighter border color */
+    border-radius: 12px; /* Slightly more rounded corners */
+    padding: 20px; /* Increased padding for more space */
+    margin: 16px;
+    height: 48vh;
+    width: 22vw; /* Maintain responsive design */
+    box-sizing: border-box;
+    display: inline-block;
+    vertical-align: top;
+    text-align: center;
+    background-color: #ffffff; /* Clean white background */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transitions */
+}
+
+.course-card:hover {
+    transform: translateY(-5px); /* Slightly lift card on hover */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Increase shadow on hover */
+}
+
+.course-card img {
+    max-width: 20vw;
+    height: 31vh;
+    border-radius: 12px; /* Match border radius */
+    object-fit: cover; /* Ensure image covers the container */
+}
+
+.course-card h2 {
+    font-size: 1.25em; /* Slightly smaller font size */
+    margin: 12px 0;
+    font-weight: 600; /* Make title slightly bolder */
+    color: #333; /* Darker color for better readability */
+}
+
+.course-card p {
+    font-size: 0.9em; /* Slightly smaller font size */
+    color: #666; /* Subtle text color */
+    line-height: 1.4; /* Improve readability */
+}
+
+.course-card .course-id {
+    margin-top: 12px;
+    font-size: 0.8em; /* Smaller font size for the course ID */
+    color: #999; /* Subtle color for less emphasis */
+}
+
+    </style>
+</head>
+<body>
+    <div id="courses-container"></div>
+
+    <script>
+        // Use the correct menteeId here
+
+        function getMenteeIdFromUrl() {
+            const pathParts = window.location.pathname.split('/');
+            // Assuming the menteeId is the second part of the path
+            return pathParts[2] || null;
+        }
+        const menteeId = getMenteeIdFromUrl();
+
+        async function fetchCourses(menteeId) {
+            try {
+                // Fetch courses from the server
+                const response = await fetch(`/access-course/${menteeId}`);
+                const courses = await response.json();
+
+                const container = document.getElementById('courses-container');
+                container.innerHTML = '';
+
+                // Create and append course cards
+                courses.forEach(course => {
+                    const courseCard = document.createElement('div');
+                    courseCard.className = 'course-card';
+                    courseCard.dataset.courseId = course._id;
+
+                    courseCard.innerHTML = `
+                        <img src="${course.avatar.url || 'placeholder.jpg'}" alt="${course.title}">
+                        <h2>${course.title}</h2>
+                        <p>${course.description || 'No description available'}</p>
+                        
+                    `;
+                    
+                    courseCard.addEventListener('click', (event) => {
+                            // Check if the click was not on the button
+                            
+                                const courseId = courseCard.dataset.courseId;
+                                window.location.href = `/courses/${menteeId}/${courseId}`;
+                            
+                        });
+                    container.appendChild(courseCard);
+                });
+            } catch (error) {
+                console.error('Error fetching courses:', error);
+            }
+        }
+
+        // Fetch the courses for the specified menteeId
+        fetchCourses(menteeId);
+    </script>
+</body>
+</html>

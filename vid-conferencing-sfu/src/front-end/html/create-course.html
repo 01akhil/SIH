@@ -1,190 +1,159 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Lectures</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 20px;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upload Course</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      color: #333;
+      margin: 0;
+      padding: 20px;
+    }
 
-        h1 {
-            color: #007bff;
-        }
+    h1 {
+      color: #007bff;
+      text-align: center;
+      margin-bottom: 20px;
+    }
 
-        .container {
-            max-width: 800px;
-            margin: auto;
-            padding: 20px;
-            background: #fff;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
 
-        .lecture-section {
-            margin-bottom: 20px;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            background: #f9f9f9;
-        }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
 
-        .lecture-section label {
-            display: block;
-            margin-bottom: 10px;
-            font-weight: bold;
-        }
+    .lecture-container {
+      margin-bottom: 20px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      background: #f9f9f9;
+    }
 
-        .lecture-section input[type="text"],
-        .lecture-section input[type="file"] {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
+    input[type="file"] {
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      padding: 10px;
+      background: #f4f4f4;
+    }
 
-        button {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            cursor: pointer;
-            border-radius: 5px;
-            font-size: 16px;
-        }
+    button {
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
 
-        button:hover {
-            background-color: #0056b3;
-        }
+    button:hover {
+      background-color: #0056b3;
+    }
 
-        .remove-button {
-            background-color: #dc3545;
-            margin-top: 10px;
-        }
+    #fileUrls {
+      font-size: 16px;
+      color: #007bff;
+      word-break: break-word;
+    }
+  </style>
+  <script>
+    function getPathParam(paramIndex) {
+      const pathParts = window.location.pathname.split('/');
+      return pathParts[paramIndex] || null;
+    }
 
-        .remove-button:hover {
-            background-color: #c82333;
+    document.addEventListener('DOMContentLoaded', () => {
+      const mentorId = getPathParam(3); 
+      const courseId = getPathParam(4); 
+      document.getElementById('mentorId').value = mentorId; 
+      document.getElementById('courseId').value = courseId; 
+    });
+
+    function addLecture() {
+      const lecturesContainer = document.getElementById('lecturesContainer');
+      const index = lecturesContainer.children.length;
+
+      const lectureHTML = `
+        <div class="lecture-container">
+          <h3>Lecture ${index + 1}</h3>
+          <input type="file" name="lecture${index}_thumbnail" accept="image/*" />
+          <input type="file" name="lecture${index}_video" accept="video/*" />
+        </div>
+      `;
+      
+      lecturesContainer.insertAdjacentHTML('beforeend', lectureHTML);
+    }
+
+    function uploadCourse(event) {
+      event.preventDefault();  
+
+      const mentorId = document.getElementById('mentorId').value;
+      const courseId = document.getElementById('courseId').value;
+
+      const formData = new FormData();
+      formData.append('mentorId', mentorId);
+      formData.append('courseId', courseId);
+
+      const lectures = document.querySelectorAll('.lecture-container');
+      lectures.forEach((lecture, index) => {
+        const thumbnailInput = lecture.querySelector(`input[name="lecture${index}_thumbnail"]`);
+        const videoInput = lecture.querySelector(`input[name="lecture${index}_video"]`);
+        
+        if (thumbnailInput.files.length > 0) {
+          formData.append(`lecture${index}_thumbnail`, thumbnailInput.files[0]);
         }
-    </style>
+        if (videoInput.files.length > 0) {
+          formData.append(`lecture${index}_video`, videoInput.files[0]);
+        }
+      });
+
+      fetch('/uploadi', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Success:', data);
+        alert('Files uploaded successfully!');
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Error uploading files!');
+      });
+    }
+  </script>
 </head>
 <body>
-    <h1>Create Lectures</h1>
-    <div class="container">
-        <form id="lectureForm">
-            <div id="lecturesContainer">
+  <div class="container">
+    <h1>Upload Course</h1>
 
-            </div>
-            <button type="button" id="addLectureButton">Add Lecture</button>
-            <button type="submit">Submit Lectures</button>
-        </form>
-    </div>
+    <form onsubmit="uploadCourse(event)">
+      <input type="hidden" id="mentorId" name="mentorId" />
+      <input type="hidden" id="courseId" name="courseId" /> 
+      
+      <div id="lecturesContainer">
+        <!-- Lecture inputs will be added here dynamically -->
+      </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const mentorId = getPathParam(3);
-
-            if (mentorId) {
-     
-                loadExistingLectures();
-
-                document.getElementById('addLectureButton').addEventListener('click', addLectureSection);
-                document.getElementById('lectureForm').addEventListener('submit', function (event) {
-                    event.preventDefault();
-
-                    const formData = new FormData(this);
-                    const lectures = [];
-
-                    formData.forEach((value, key) => {
-                        if (key === 'lectureTitle[]') {
-                            lectures.push({ title: value, videoData: null });
-                        } else if (key === 'lectureVideo[]') {
-                            const lecture = lectures[lectures.length - 1];
-                            const reader = new FileReader();
-
-                            reader.onload = function(e) {
-                                lecture.videoData = e.target.result;
-                                if (lectures.length === formData.getAll('lectureTitle[]').length) {
-                                    saveLectures(lectures);
-                                }
-                            };
-
-                            reader.readAsDataURL(value);
-                        }
-                    });
-                });
-            }
-
-            function addLectureSection() {
-                const lecturesContainer = document.getElementById('lecturesContainer');
-
-                const lectureSection = document.createElement('div');
-                lectureSection.className = 'lecture-section';
-                lectureSection.innerHTML = `
-                    <label for="lectureTitle">Lecture Title:</label>
-                    <input type="text" name="lectureTitle[]" required>
-                    
-                    <label for="lectureVideo">Upload Video:</label>
-                    <input type="file" name="lectureVideo[]" accept="video/*" required>
-                    
-                    <button type="button" class="remove-button">Remove Lecture</button>
-                `;
-
-                lectureSection.querySelector('.remove-button').addEventListener('click', function() {
-                    lectureSection.remove();
-                });
-
-                lecturesContainer.appendChild(lectureSection);
-            }
-
-            function getQueryParam(param) {
-                const urlParams = new URLSearchParams(window.location.search);
-                return urlParams.get(param);
-            }
-
-            function getPathParam(paramIndex) {
-                const pathParts = window.location.pathname.split('/');
-                return pathParts[paramIndex] || null;
-            }
-
-            function saveLectures(lectures) {
-                localStorage.setItem('lectures', JSON.stringify(lectures));
-                alert('Lectures saved successfully!');
-            }
-
-            function loadExistingLectures() {
-                const lectures = JSON.parse(localStorage.getItem('lectures')) || [];
-
-                lectures.forEach(lecture => {
-                    const lecturesContainer = document.getElementById('lecturesContainer');
-                    
-                    const lectureSection = document.createElement('div');
-                    lectureSection.className = 'lecture-section';
-                    lectureSection.innerHTML = `
-                        <label for="lectureTitle">Lecture Title:</label>
-                        <input type="text" value="${lecture.title}" disabled>
-                        
-                        <label for="lectureVideo">Video:</label>
-                        ${lecture.videoData ? `<video controls><source src="${lecture.videoData}" type="video/mp4"></video>` : '<p>No video available</p>'}
-                        
-                        <button type="button" class="remove-button">Remove Lecture</button>
-                    `;
-
-                    lectureSection.querySelector('.remove-button').addEventListener('click', function() {
-                        lectureSection.remove();
-                       
-                    });
-
-                    lecturesContainer.appendChild(lectureSection);
-                });
-            }
-        });
-    </script>
+      <button type="button" onclick="addLecture()">Add Lecture</button>
+      <button type="submit">Upload Course</button>
+    </form>
+  </div>
 </body>
 </html>
+
+

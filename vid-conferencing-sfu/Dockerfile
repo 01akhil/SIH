@@ -69,12 +69,32 @@ COPY src/front-end/html/paymentSuccess.html /app
 
 COPY src/front-end/html/mentor-courses.html /app
 COPY src/front-end/html/create-course.html /app
+COPY src/front-end/html/landing1.html /app
+COPY src/front-end/html/upload.html /app
+COPY src/front-end/html/page.html /app
+COPY src/front-end/html/page2.html /app
+COPY src/front-end/html/courses-all.html /app
+COPY src/front-end/html/courseDetails.html /app
+COPY src/front-end/html/your-courses.html /app
+COPY src/front-end/html/mock-interviews.html /app
+COPY src/front-end/html/ui.html /app
+COPY src/front-end/html/language.html /app
+COPY src/front-end/html/photography.html /app
+COPY src/front-end/html/mentor-own-courses.html /app
+COPY src/front-end/html/mentor-lecture.html /app
+COPY src/front-end/html/blog-mentee.html /app
+
 
 COPY src/front-end/assets/bg.avif /app
 COPY src/front-end/assets/mentor.png /app
 COPY src/front-end/assets/mentee.png /app
-
-
+COPY src/front-end/assets/icon.png /app
+COPY src/front-end/assets/inbox-alt-1-svgrepo-com.svg /app
+COPY src/front-end/assets/exam-a-plus-svgrepo-com.svg /app
+COPY src/front-end/assets/dashboard-2-svgrepo-com.svg /app
+COPY src/front-end/assets/courses-svgrepo-com.svg /app
+COPY src/front-end/assets/blog-website-svgrepo-com.svg /app
+COPY src/front-end/assets/logout-svgrepo-com.svg /app
 
 
 
