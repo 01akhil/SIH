@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+      integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <title>Document</title>
+  </head>
+  <body>
+    <style>
+      :root {
+        --background: #eeeef2;
+        --navbar-width: 256px;
+        --navbar-width-min: 80px;
+        --navbar-dark-primary: #fff;
+        --navbar-dark-secondary: #333333;
+        --navbar-light-primary: #333;
+        --navbar-light-secondary: #000;
+        --highlight-text: #007bff;
+      }
+      * {
+        background-color: var(--background);
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+      }
+      body {
+        display: flex;
+        flex-wrap: nowrap;
+      }
+      iframe {
+        height: 100vh;
+      }
+      .card {
+        height: 550px;
+        width: 550px;
+        border-radius: 16px;
+        line-height: 34px;
+        margin-top: 1vh;
+        padding: 1rem;
+        background-color: var(--navbar-dark-primary);
+      }
+      h1,
+      h2,
+      ul,
+      ul li {
+        background-color: var(--navbar-dark-primary);
+      }
+      button {
+        background-color: var(--highlight-text); /* Button color */
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 16px;
+        font-size: 16px;
+        width: 400px;
+        cursor: pointer;
+        transition: transform 0.1s ease, box-shadow 0.1s ease;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+      }
+
+      button:active {
+        transform: translateY(3px); /* Press-down effect */
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Shadow becomes smaller */
+      }
+      .side-panel {
+        width: 300px;
+        height: 540px;
+        background-color: var(--navbar-dark-primary);
+        position: absolute;
+        right: 1vw;
+        top: 1vw;
+        border-radius: 16px;
+        display: flex;
+        flex-direction: column;
+        padding: 20px;
+      }
+
+      .timer {
+        font-size: 24px;
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 20px;
+        border-radius: 16px;
+        background-color: var(--background);
+        box-shadow: 4px 4px 6px 0 rgba(255, 255, 255, 0.3),
+          -4px -4px 6px 0 rgba(116, 125, 136, 0.2),
+          inset -4px -4px 6px 0 rgba(255, 255, 255, 0.2),
+          inset 4px 4px 6px 0 rgba(0, 0, 0, 0.2);
+        padding: 10px;
+        cursor: pointer;
+      }
+
+      .question-numbers {
+        flex-grow: 1; /* This will stretch the question numbers list to take available space */
+        overflow-y: auto; /* Allow scrolling if needed */
+        margin-bottom: 20px;
+        background-color: var(--navbar-dark-primary);
+      }
+
+      .question-numbers ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .question-numbers li {
+        padding: 10px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        margin: 5px;
+        text-align: center;
+        height: 30px;
+        width: 30px;
+        border-radius: 50%;
+        background-color: var(--navbar-dark-primary);
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+      }
+
+      .question-numbers li:hover {
+        background-color: #007bff;
+        border-radius: 50%;
+        transform: scale(1.05);
+      }
+
+      .submit {
+        width: 300px;
+      }
+      .bottom {
+        display: flex;
+        flex-wrap: nowrap;
+        background-color: var(--navbar-dark-primary);
+        justify-content: space-between;
+      }
+      .arrow {
+        height: 40px;
+        width: 40px;
+        padding: 5px;
+        text-align: center;
+        border-radius: 50%;
+      }
+      i {
+        background-color: #007bff;
+        color: #fff;
+      }
+      .options {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        margin-bottom: 20px;
+        background-color: var(--navbar-dark-primary);
+      }
+
+      .options label {
+        background-color: var(--navbar-dark-primary);
+        padding: 10px;
+        border-radius: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        font-size: 16px;
+      }
+
+      .options input[type="radio"] {
+        margin-right: 10px;
+      }
+
+      .options label:hover {
+        background-color: var(--highlight-text);
+      }
+    </style>
+    <iframe src="../sidebar.html" frameborder="0"></iframe>
+    <div class="card">
+      <h1 class="question">Question 1:</h1>
+      <h2>
+        Which of the following is a key principle of User Experience (UX)
+        design?
+      </h2>
+
+      <div class="options">
+        <label>
+          <input type="radio" name="answer" value="a" />
+          Using the most visually appealing fonts and colors
+        </label>
+        <label>
+          <input type="radio" name="answer" value="b" />
+          Ensuring consistent branding across all platforms
+        </label>
+        <label>
+          <input type="radio" name="answer" value="c" />
+          Prioritizing the user's needs throughout the design process
+        </label>
+        <label>
+          <input type="radio" name="answer" value="d" />
+          Creating a detailed technical specification for the developers
+        </label>
+      </div>
+
+      <div class="bottom">
+        <button class="arrow"><i class="fa-solid fa-chevron-left"></i></button>
+        <button onclick="window.location.href='question2.html'">Save and Next</button>
+        <button onclick="window.location.href='question2.html'" class="arrow"><i class="fa-solid fa-chevron-right"></i></button>
+      </div>
+    </div>
+    <div class="side-panel">
+      <div class="timer" id="timer">00:30:00</div>
+      <!-- Timer with an initial value -->
+      <div class="question-numbers">
+        <ul>
+          <!-- Loop to create numbers 1 to 30 -->
+          <li>1</li>
+          <li>2</li>
+          <li>3</li>
+          <li>4</li>
+          <li>5</li>
+          <li>6</li>
+          <li>7</li>
+          <li>8</li>
+          <li>9</li>
+          <li>10</li>
+          <li>11</li>
+          <li>12</li>
+          <li>13</li>
+          <li>14</li>
+          <li>15</li>
+          <li>16</li>
+          <li>17</li>
+          <li>18</li>
+          <li>19</li>
+          <li>20</li>
+          <li>21</li>
+          <li>22</li>
+          <li>23</li>
+          <li>24</li>
+          <li>25</li>
+          <li>26</li>
+          <li>27</li>
+          <li>28</li>
+          <li>29</li>
+          <!-- Add more numbers as needed -->
+          <li>30</li>
+        </ul>
+      </div>
+      <button class="submit" id="submit-btn">Submit</button>
+    </div>
+
+    <script>
+      // Timer duration in seconds (e.g., 30 minutes = 15 * 60 seconds)
+      let duration = 30 * 60;
+
+      // Function to format the time in HH:MM:SS
+      function formatTime(seconds) {
+        const minutes = Math.floor(seconds / 60);
+        const hours = Math.floor(minutes / 60);
+        const remainingMinutes = minutes % 60;
+        const remainingSeconds = seconds % 60;
+
+        // Pad single digits with a leading zero for consistency
+        return `${String(hours).padStart(2, "0")}:${String(
+          remainingMinutes
+        ).padStart(2, "0")}:${String(remainingSeconds).padStart(2, "0")}`;
+      }
+
+      // Function to start the countdown
+      function startTimer() {
+        const timerElement = document.getElementById("timer");
+        const interval = setInterval(() => {
+          if (duration > 0) {
+            duration--;
+            timerElement.textContent = formatTime(duration); // Update the timer text
+          } else {
+            clearInterval(interval); // Stop the timer when it reaches zero
+            alert("Time's up!");
+          }
+        }, 1000); // Update every second
+      }
+
+      // Start the timer when the page loads
+      window.onload = function () {
+        startTimer();
+      };
+    </script>
+  </body>
+</html>

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../css/startTest.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+      integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <title>Document</title>
+  </head>
+  <body>
+    <style>
+      :root {
+        --background: #eeeef2;
+        --navbar-width: 256px;
+        --navbar-width-min: 80px;
+        --navbar-dark-primary: #fff;
+        --navbar-dark-secondary: #333333;
+        --navbar-light-primary: #333;
+        --navbar-light-secondary: #000;
+        --highlight-text: #007bff;
+      }
+      * {
+        background-color: var(--background);
+        color: var(--navbar-light-secondary);
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+      }
+      body {
+        display: flex;
+        flex-wrap: nowrap;
+      }
+      iframe {
+        height: 100vh;
+        border: none;
+      }
+      #search {
+        height: 60px;
+        width: 500px;
+      }
+      i {
+        background-color: var(--navbar-dark-primary);
+      }
+      #bar {
+        width: 600px;
+        height: 340px;
+        background-color: var(--navbar-dark-primary);
+      }
+      .main-card {
+        background-color: var(--navbar-dark-primary);
+        height: 570px;
+        margin-top: 1vh;
+        width: 600px;
+        border: #eeeef2;
+        border-radius: 16px;
+        padding: 1rem;
+      }
+      a {
+        text-decoration: none;
+        color: #000;
+        background-color: var(--navbar-dark-primary);
+      }
+      a:hover {
+        color: var(--highlight-text);
+      }
+      h1,
+      h3 {
+        background-color: var(--navbar-dark-primary);
+      }
+      table {
+        padding: 0;
+        border-collapse: collapse; /* Removes gaps between table cells */
+        width: 100%; /* Optional: makes the table fill its container */
+      }
+      th,
+      td {
+        width: 300px;
+        text-align: left;
+        background-color: var(--navbar-dark-primary);
+      }
+      span {
+        background: var(--navbar-dark-primary);
+        color: var(--highlight-text);
+        position: relative;
+        right: 0px;
+      }
+      .profile {
+        width: 310px;
+        height: 100vh;
+        position: absolute;
+        right: 1vw;
+        top: 1vw;
+        background-color: var(--navbar-dark-primary);
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        border-radius: 16px;
+      }
+      #search {
+        height: 70px;
+        border-radius: 16px;
+        padding: 0;
+      }
+      .image {
+        height: 100px;
+        width: 100px;
+        padding: 0;
+        border-radius: 50%;
+        box-shadow: 4px 4px 6px 0 rgba(255, 255, 255, 0.3),
+          -4px -4px 6px 0 rgba(116, 125, 136, 0.2),
+          inset -4px -4px 6px 0 rgba(255, 255, 255, 0.2),
+          inset 4px 4px 6px 0 rgba(0, 0, 0, 0.2);
+      }
+      #cal {
+        height: 240px;
+      }
+      .user {
+        display: flex;
+        justify-content: center;
+        background-color: var(--navbar-dark-primary);
+        width: 200px;
+        padding: 0;
+        flex-wrap: wrap;
+      }
+      .user p {
+        background-color: var(--navbar-dark-primary);
+        text-align: center;
+      }
+    </style>
+    <iframe src="sidebar.html"></iframe>
+    <div class="main-card">
+      <h1 style="text-align: center">Welcome To The Test Portal</h1>
+      <hr />
+      <h3>Active Test</h3>
+      <table>
+        <tr>
+          <th>Topic</th>
+          <th>Duration</th>
+        </tr>
+        <tr>
+          <td>
+            <i class="fa-brands fa-uikit"></i> <a href="start.html"> UI/UX Basics</a>
+          </td>
+          <td>30 minutes</td>
+        </tr>
+        <tr>
+          <td>
+            <i class="fa-brands fa-java"></i> <a href=""> Advanced Java</a>
+          </td>
+          <td>45 minutes</td>
+        </tr>
+        <tr>
+          <td>
+            <i class="fa-solid fa-calculator"></i
+            ><a href=""> Logical Reasoning - I</a>
+          </td>
+          <td>45 minutes</td>
+        </tr>
+      </table>
+      <hr />
+      <iframe id="bar" src="chart.html" frameborder="0"></iframe>
+    </div>
+
+    <div class="profile">
+      <iframe id="search" src="searchBar.html"></iframe>
+      <div class="user">
+        <img src="../assets/mentor (1).png" alt="" class="image" />
+        <p>Nicole Hawkings</p>
+      </div>
+      <iframe id="cal" src="./calender.html"></iframe>
+    </div>
+
+    <script>
+      async function startTest() {
+        try {
+          const response = await fetch('/startTest', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ testId: '12345' }), // You can replace '12345' with the actual test ID
+          });
+          
+          const data = await response.json();
+          console.log(data); // You can use this data to update the UI or move to the next step
+          // Redirect to the question page
+          window.location.href = 'question.html';
+        } catch (error) {
+          console.error('Error starting test:', error);
+        }
+      }
+    
+      // Attach the startTest function to the button click event
+      document.querySelector('button').addEventListener('click', startTest);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../css/sidebar_style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+      integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <title>Sidebar</title>
+  </head>
+  <body>
+    <style>
+      :root {
+        --background: #eeeef2;
+        --navbar-width: 256px;
+        --navbar-width-min: 80px;
+        --navbar-dark-primary: #fff;
+        --navbar-dark-secondary: #333333;
+        --navbar-light-primary: #333;
+        --navbar-light-secondary: #000;
+        --highlight-text: #007bff;
+      }
+      ::-webkit-scrollbar {
+        display: none;
+      }
+
+      /* Ensure that scrolling still works */
+      html {
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none; /* IE and Edge */
+      }
+      html,
+      body {
+        margin: 0;
+        background: var(--background);
+      }
+
+      #nav-toggle:checked ~ #nav-header {
+        width: calc(var(--navbar-width-min) - 16px);
+      }
+
+      #nav-toggle:checked ~ #nav-content,
+      #nav-toggle:checked ~ #nav-footer {
+        width: var(--navbar-width-min);
+      }
+
+      #nav-toggle:checked ~ #nav-header #nav-title {
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.1s;
+      }
+      .logo {
+        height: 1.5rem;
+      }
+      #nav-toggle:checked ~ #nav-header label[for="nav-toggle"] {
+        left: calc(50% - 8px);
+        transform: translate(-50%);
+      }
+
+      #nav-toggle:checked ~ #nav-header #nav-toggle-burger {
+        background: var(--navbar-light-primary);
+      }
+      #nav-toggle:checked ~ #nav-header #nav-toggle-burger:before,
+      #nav-toggle:checked ~ #nav-header #nav-toggle-burger::after {
+        width: 16px;
+        background: var(--navbar-light-secondary);
+        transform: translate(0, 0) rotate(0deg);
+      }
+
+      #nav-toggle:checked ~ #nav-content .nav-button span {
+        opacity: 0;
+        transition: opacity 0.1s;
+      }
+
+      #nav-toggle:checked ~ #nav-content .nav-button .fas {
+        min-width: calc(100% - 16px);
+      }
+
+      #nav-toggle:checked ~ #nav-footer #nav-footer-avatar {
+        margin-left: 0;
+        left: 50%;
+        transform: translate(-50%);
+      }
+
+      #nav-toggle:checked ~ #nav-footer #nav-footer-titlebox,
+      #nav-toggle:checked ~ #nav-footer label[for="nav-footer-toggle"] {
+        opacity: 0;
+        transition: opacity 0.1s;
+        pointer-events: none;
+      }
+
+      #nav-bar {
+        position: absolute;
+        left: 1vw;
+        overflow: auto;
+        top: 1vw;
+        height: 100vh;
+        background: var(--navbar-dark-primary);
+        border-radius: 16px;
+        display: flex;
+        flex-direction: column;
+        color: var(--navbar-light-primary);
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+        overflow: hidden;
+        user-select: none;
+      }
+      #nav-bar hr {
+        margin: 0;
+        position: relative;
+        left: 16px;
+        width: calc(100% - 32px);
+        border: none;
+        border-top: solid 1px var(--navbar-dark-secondary);
+      }
+      #nav-bar a {
+        color: inherit;
+        text-decoration: inherit;
+      }
+      #nav-bar input[type="checkbox"] {
+        display: none;
+      }
+
+      #nav-header {
+        position: relative;
+        width: var(--navbar-width);
+        left: 16px;
+        width: calc(var(--navbar-width) - 16px);
+        min-height: 80px;
+        color: var(--highlight-text);
+        background: var(--navbar-dark-primary);
+        border-radius: 16px;
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        transition: width 0.2s;
+      }
+      #nav-header hr {
+        position: absolute;
+        bottom: 0;
+      }
+
+      #nav-title {
+        font-size: 1.5rem;
+        transition: opacity 1s;
+      }
+
+      label[for="nav-toggle"] {
+        position: absolute;
+        right: 0;
+        width: 3rem;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+      }
+
+      #nav-toggle-burger {
+        position: relative;
+        width: 16px;
+        height: 2px;
+        background: var(--navbar-dark-primary);
+        border-radius: 99px;
+        transition: background 0.2s;
+      }
+      #nav-toggle-burger:before,
+      #nav-toggle-burger:after {
+        content: "";
+        position: absolute;
+        top: -6px;
+        width: 10px;
+        height: 2px;
+        background: var(--navbar-light-primary);
+        border-radius: 99px;
+        transform: translate(2px, 8px) rotate(30deg);
+        transition: 0.2s;
+      }
+      #nav-toggle-burger:after {
+        top: 6px;
+        transform: translate(2px, -8px) rotate(-30deg);
+      }
+
+      #nav-content {
+        margin: -16px 0;
+        padding: 16px 0;
+        position: relative;
+        flex: 1;
+        width: var(--navbar-width);
+        background: var(--navbar-dark-primary);
+        box-shadow: 0 0 0 16px var(--navbar-dark-primary);
+        direction: rtl;
+        overflow-x: hidden;
+        transition: width 0.2s;
+      }
+      #nav-content::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      #nav-content::-webkit-scrollbar-thumb {
+        border-radius: 99px;
+        background-color: #d62929;
+      }
+      #nav-content::-webkit-scrollbar-button {
+        height: 16px;
+      }
+
+      #nav-content-highlight {
+        position: absolute;
+        left: 16px;
+        top: -70px;
+        width: calc(100% - 16px);
+        height: 54px;
+        background: var(--background);
+        background-attachment: fixed;
+        border-radius: 16px 0 0 16px;
+        transition: top 0.2s;
+      }
+      #nav-content-highlight:before,
+      #nav-content-highlight:after {
+        content: "";
+        position: absolute;
+        right: 0;
+        bottom: 100%;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        box-shadow: 16px 16px var(--background);
+      }
+      #nav-content-highlight:after {
+        top: 100%;
+        box-shadow: 16px -16px var(--background);
+      }
+
+      .nav-button {
+        position: relative;
+        margin-left: 16px;
+        height: 54px;
+        display: flex;
+        align-items: center;
+        color: var(--navbar-light-secondary);
+        direction: ltr;
+        cursor: pointer;
+        z-index: 1;
+        transition: color 0.2s;
+      }
+      .nav-button span {
+        transition: opacity 1s;
+      }
+      .nav-button .fas {
+        transition: min-width 0.2s;
+      }
+      .nav-button:nth-of-type(1):hover {
+        color: var(--highlight-text);
+      }
+      .nav-button:nth-of-type(1):hover ~ #nav-content-highlight {
+        box-shadow: 4px 4px 6px 0 rgba(255, 255, 255, 0.3),
+          -4px -4px 6px 0 rgba(116, 125, 136, 0.2),
+          inset -4px -4px 6px 0 rgba(255, 255, 255, 0.2),
+          inset 4px 4px 6px 0 rgba(0, 0, 0, 0.2);
+        top: 16px;
+      }
+      .nav-button:nth-of-type(2):hover {
+        color: var(--highlight-text);
+      }
+      .nav-button:nth-of-type(2):hover ~ #nav-content-highlight {
+        top: 70px;
+        box-shadow: 4px 4px 6px 0 rgba(255, 255, 255, 0.3),
+          -4px -4px 6px 0 rgba(116, 125, 136, 0.2),
+          inset -4px -4px 6px 0 rgba(255, 255, 255, 0.2),
+          inset 4px 4px 6px 0 rgba(0, 0, 0, 0.2);
+      }
+      .nav-button:nth-of-type(3):hover {
+        color: var(--highlight-text);
+      }
+      .nav-button:nth-of-type(3):hover ~ #nav-content-highlight {
+        top: 124px;
+        box-shadow: 4px 4px 6px 0 rgba(255, 255, 255, 0.3),
+          -4px -4px 6px 0 rgba(116, 125, 136, 0.2),
+          inset -4px -4px 6px 0 rgba(255, 255, 255, 0.2),
+          inset 4px 4px 6px 0 rgba(0, 0, 0, 0.2);
+      }
+      .nav-button:nth-of-type(4):hover {
+        color: var(--highlight-text);
+      }
+      .nav-button:nth-of-type(4):hover ~ #nav-content-highlight {
+        top: 178px;
+        box-shadow: 4px 4px 6px 0 rgba(255, 255, 255, 0.3),
+          -4px -4px 6px 0 rgba(116, 125, 136, 0.2),
+          inset -4px -4px 6px 0 rgba(255, 255, 255, 0.2),
+          inset 4px 4px 6px 0 rgba(0, 0, 0, 0.2);
+      }
+      .nav-button:nth-of-type(5):hover {
+        color: var(--highlight-text);
+      }
+      .nav-button:nth-of-type(5):hover ~ #nav-content-highlight {
+        top: 232px;
+        box-shadow: 4px 4px 6px 0 rgba(255, 255, 255, 0.3),
+          -4px -4px 6px 0 rgba(116, 125, 136, 0.2),
+          inset -4px -4px 6px 0 rgba(255, 255, 255, 0.2),
+          inset 4px 4px 6px 0 rgba(0, 0, 0, 0.2);
+      }
+      .nav-button:nth-of-type(6):hover {
+        color: var(--highlight-text);
+      }
+      .nav-button:nth-of-type(6):hover ~ #nav-content-highlight {
+        top: 286px;
+        box-shadow: 4px 4px 6px 0 rgba(255, 255, 255, 0.3),
+          -4px -4px 6px 0 rgba(116, 125, 136, 0.2),
+          inset -4px -4px 6px 0 rgba(255, 255, 255, 0.2),
+          inset 4px 4px 6px 0 rgba(0, 0, 0, 0.2);
+      }
+      .nav-button:nth-of-type(7):hover {
+        color: var(--highlight-text);
+      }
+      .nav-button:nth-of-type(7):hover ~ #nav-content-highlight {
+        top: 340px;
+        box-shadow: 4px 4px 6px 0 rgba(255, 255, 255, 0.3),
+          -4px -4px 6px 0 rgba(116, 125, 136, 0.2),
+          inset -4px -4px 6px 0 rgba(255, 255, 255, 0.2),
+          inset 4px 4px 6px 0 rgba(0, 0, 0, 0.2);
+      }
+      .nav-button:nth-of-type(8):hover {
+        color: var(--highlight-text);
+      }
+      .nav-button:nth-of-type(8):hover ~ #nav-content-highlight {
+        top: 394px;
+        box-shadow: 4px 4px 6px 0 rgba(255, 255, 255, 0.3),
+          -4px -4px 6px 0 rgba(116, 125, 136, 0.2),
+          inset -4px -4px 6px 0 rgba(255, 255, 255, 0.2),
+          inset 4px 4px 6px 0 rgba(0, 0, 0, 0.2);
+      }
+
+      #nav-bar .fas {
+        min-width: 3rem;
+        text-align: center;
+      }
+    </style>
+    <div id="nav-bar">
+      <input id="nav-toggle" type="checkbox" />
+      <div id="nav-header">
+        <a id="nav-title" href="https://codepen.io" target="_blank"
+          ><img class="logo" src="../assets/stars.png" /> VARदान</a
+        >
+        <label for="nav-toggle"><span id="nav-toggle-burger"></span></label>
+        <hr />
+      </div>
+      <div id="nav-content">
+        <div class="nav-button">
+          <i class="fa-solid fa-desktop fas"></i><span>Dashboard</span>
+        </div>
+        <div class="nav-button">
+          <i class="fa-solid fa-book fas"></i><span>Courses</span>
+        </div>
+        <div class="nav-button">
+          <i class="fa-solid fa-file-signature fas"></i><span>Tests</span>
+        </div>
+        <hr />
+        <div class="nav-button">
+          <i class="fa-solid fa-users fas"></i><span>Mentors</span>
+        </div>
+        <div class="nav-button">
+          <i class="fa-solid fa-comments fas"></i><span>Blog</span>
+        </div>
+        <div class="nav-button">
+          <i class="fa-solid fa-calendar-days fas"></i><span>Calender</span>
+        </div>
+        <div class="nav-button">
+          <i class="fa-solid fa-tv fas"></i><span>Meeting</span>
+        </div>
+        <hr />
+        <div class="nav-button">
+          <i class="fas fa-gem"></i><span>Go Pro</span>
+        </div>
+        <div id="nav-content-highlight"></div>
+      </div>
+      <!-- <input id="nav-footer-toggle" type="checkbox" />
+      <div id="nav-footer">
+        <div id="nav-footer-heading">
+          <div id="nav-footer-avatar">
+            <img
+              src="https://gravatar.com/avatar/4474ca42d303761c2901fa819c4f2547"
+            />
+          </div>
+          <div id="nav-footer-titlebox">
+            <a
+              id="nav-footer-title"
+              href="https://codepen.io/uahnbu/pens/public"
+              target="_blank"
+              >uahnbu</a
+            ><span id="nav-footer-subtitle">Admin</span>
+          </div>
+          <label for="nav-footer-toggle"><i class="fas fa-caret-up"></i></label>
+        </div>
+        <div id="nav-footer-content">
+          <Lorem
+            >ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+            tempor incididunt ut labore et dolore magna aliqua.</Lorem
+          >
+        </div>
+      </div> -->
+    </div>
+  </body>
+</html>
